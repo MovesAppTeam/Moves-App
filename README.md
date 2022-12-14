@@ -3,6 +3,7 @@ Developers enter here
 
 Beginners Guide (VSCODE)
 
+
 1) Download extensions:
     - Flutter
     - Dart

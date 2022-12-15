@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+
+Future<void> main() async {
+
   print("hello world");
   runApp(
     MaterialApp(
@@ -11,4 +15,10 @@ void main() {
         )
       )
     );
+
+  await Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
+
 }
+

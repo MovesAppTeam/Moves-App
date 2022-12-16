@@ -30,6 +30,13 @@
             {
               "client_id": "789491833971-j177gorpaq5cqgoi34d47gd6a4qv2je7.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "789491833971-r6is1dppm2c19409pd93drgq8ojbukmh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.application"
+              }
             }
           ]
         }

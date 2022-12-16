@@ -1,4 +1,5 @@
 import 'package:application/screens/home_screen.dart';
+import 'package:application/screens/profile/user_profile_screen.dart';
 import 'package:application/utils/color_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
@@ -26,9 +27,9 @@ class _SignInScreenState extends State<SignInScreen> {
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
                 gradient: LinearGradient(colors: [
-              hexStringToColor("57E2E5"),
-              hexStringToColor("6A7FDB"),
-              hexStringToColor("45CB85")
+              hexStringToColor("CC3636"),
+              hexStringToColor("367E18"),
+              hexStringToColor("FFE9A0")
             ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
             child: SingleChildScrollView(
                 child: Padding(
@@ -36,7 +37,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         20, MediaQuery.of(context).size.height * 0.2, 20, 0),
                     child: Column(
                       children: <Widget>[
-                        logoWidget("assets/juncture-logo.png"),
+                        logoWidget("assets/solo-cup1-logo.png"),
                         const SizedBox(
                           height: 30,
                         ),
@@ -58,7 +59,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => HomeScreen()));
+                                  builder: (context) => UserProfile()));
                           }).onError((error, stackTrace) {
                             print("Error ${error.toString()}");
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -83,7 +84,11 @@ class _SignInScreenState extends State<SignInScreen> {
                         }),
                         signUpOption()
                       ],
-                    )))));
+                    )
+                    )
+                    )
+                    )
+                    );
   }
 
   Row signUpOption() {

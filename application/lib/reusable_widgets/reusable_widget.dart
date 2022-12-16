@@ -1,3 +1,4 @@
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -5,8 +6,8 @@ Image logoWidget(String imagename) {
   return Image.asset(
     imagename,
     fit: BoxFit.fitWidth,
-    width: 300,
-    height: 300,
+    width: 240,
+    height: 240,
   );
 }
 
@@ -65,4 +66,29 @@ Container signInSignUpButton(
               color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 16),
         ),
       ));
+}
+
+String imgRandom() {
+  var imgList = [
+    "smiley-1635449__480.png",
+    "man-303792__480.png",
+    "hijab-2272708__480.webp",
+    "businessman-310819__480.webp",
+    "avatar-1300331__480.webp",
+    "avatar-1295773__480.png",
+    "8.jpg",
+    "7.jpg",
+    "6.jpg"
+        "5.jpg"
+        "4.jpg"
+        "3.jpg"
+        "2.jpg"
+        "1.jpg"
+        "0.jpg"
+  ];
+  int min = 0;
+  int max = imgList.length - 1;
+  Random rnd = new Random();
+  int r = min + rnd.nextInt(max - min);
+  return imgList[r].toString();
 }

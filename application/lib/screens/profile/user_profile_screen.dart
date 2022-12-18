@@ -1,8 +1,10 @@
 import 'package:application/screens/Signin_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:application/reusable_widgets/reusable_widget.dart';
 import 'package:application/utils/color_utils.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'dart:async';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -12,18 +14,35 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+  Future pickImg() async {
+    final user = FirebaseAuth.instance.currentUser;
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+      if (image == null) return;
+
+      final imageTemp = File(image.path);
+
+      return image.path;
+    } catch (error) {
+      print(error);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: Text("Profile", style: Theme.of(context).textTheme.headline4),
-          backgroundColor: hexStringToColor("F57328"),
+          backgroundColor: Colors.teal,
         ),
         body: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
-            color: hexStringToColor("277BC0"),
+            color: Colors.grey.shade100,
             child: SingleChildScrollView(
               child: Padding(
                   padding: EdgeInsets.fromLTRB(
@@ -38,33 +57,41 @@ class _UserProfileState extends State<UserProfile> {
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(100),
                                 child: Image(
-                                  image: AssetImage(
-                                      "assets/profile_headshots/${imgRandom()}"),
+                                  image: AssetImage(user!.photoURL ??
+                                      "assets/solo-cup-logo.png"),
                                 )),
                           ),
                           Positioned(
                             bottom: 0,
                             right: 0,
-                            child: Container( 
+                            child: Container(
                               width: 35,
                               height: 35,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(100),
                                 color: Colors.white.withOpacity(0.8),
                               ),
-                              child: Icon(Icons.app_registration,
-                              size: 20, color: Colors.black.withOpacity(0.5)),
-                              
-                                  ),
+                              child: IconButton(
+                                icon: Icon(Icons.app_registration,
+                                    size: 20,
+                                    color: Colors.black.withOpacity(0.5)),
+                                onPressed: () async {
+                                  print("Image picker pressed");
+                                  final image = await ImagePicker()
+                                      .pickImage(source: ImageSource.gallery);
+                                  user.updatePhotoURL(image?.path);
+                                },
+                              ),
+                            ),
                           )
                         ],
                       ),
                       const SizedBox(
                         height: 10,
                       ),
-                      Text("Name",
+                      Text(user.displayName ?? "Name",
                           style: Theme.of(context).textTheme.headline4),
-                      Text("Email",
+                      Text(user.email ?? "Email",
                           style: Theme.of(context).textTheme.bodyText2),
                       const SizedBox(
                         height: 20,
@@ -99,12 +126,13 @@ class _UserProfileState extends State<UserProfile> {
                         textColor: Colors.black,
                         onPress: () {
                           FirebaseAuth.instance.signOut().then((value) {
-                          print("Signed Out");
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SignInScreen()));
-                  });
+                            print("Signed Out");
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SignInScreen()));
+                          });
                         },
                       ),
                     ],
@@ -131,29 +159,33 @@ class ProfileListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        onTap: onPress,
-        leading: Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-              color: Colors.black.withOpacity(0.1),
-            ),
-            child: const Icon(
-              Icons.settings_outlined,
-              color: Colors.black87,
-            )),
-        title: Text(title, style: Theme.of(context).textTheme.bodyText1?.apply(color:textColor)),
-        trailing: endIcon? Container(
-          width: 35,
-          height: 35,
+      onTap: onPress,
+      leading: Container(
+          width: 40,
+          height: 40,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(100),
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.black.withOpacity(0.1),
           ),
-          child: Icon(Icons.chevron_right,
-              size: 18, color: Colors.black.withOpacity(0.5)),
-        ) : null,
-        );
+          child: const Icon(
+            Icons.settings_outlined,
+            color: Colors.black87,
+          )),
+      title: Text(title,
+          style:
+              Theme.of(context).textTheme.bodyText1?.apply(color: textColor)),
+      trailing: endIcon
+          ? Container(
+              width: 35,
+              height: 35,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+                color: Colors.grey.withOpacity(0.1),
+              ),
+              child: Icon(Icons.chevron_right,
+                  size: 18, color: Colors.black.withOpacity(0.5)),
+            )
+          : null,
+    );
   }
 }

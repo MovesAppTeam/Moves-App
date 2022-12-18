@@ -1,4 +1,5 @@
 import 'package:application/reusable_widgets/reusable_widget.dart';
+import 'package:application/screens/bottom_navigation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -13,9 +14,10 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _emailTextController = TextEditingController();
+  TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _userNameTextController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,11 +71,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   email: _emailTextController.text,
                                   password: _passwordTextController.text)
                               .then((value) {
+                            final user = FirebaseAuth.instance.currentUser;
+                            try {
+                              user!.updateDisplayName(
+                                  _userNameTextController.text);
+                              user.updatePhotoURL(
+                                  "assets/profile_headshots/${imgRandom()}");
+                            } catch (error) {
+                              print(error);
+                            }
                             print("Created New Account");
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const HomeScreen()));
+                                    builder: (context) => const BottomNav()));
                           }).onError((error, stackTrace) {
                             print("Error ${error.toString()}");
                           });

@@ -1,3 +1,4 @@
+import 'package:application/screens/bottom_navigation.dart';
 import 'package:application/screens/home_screen.dart';
 import 'package:application/screens/profile/user_profile_screen.dart';
 import 'package:application/utils/color_utils.dart';
@@ -59,7 +60,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => UserProfile()));
+                                  builder: (context) => BottomNav()));
                           }).onError((error, stackTrace) {
                             print("Error ${error.toString()}");
                             ScaffoldMessenger.of(context).showSnackBar(

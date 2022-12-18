@@ -23,6 +23,14 @@ PODS:
   - FirebaseCoreInternal (10.3.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
   - Flutter (1.0.0)
+  - google_maps_flutter_ios (0.0.1):
+    - Flutter
+    - GoogleMaps
+  - GoogleMaps (7.2.0):
+    - GoogleMaps/Maps (= 7.2.0)
+  - GoogleMaps/Base (7.2.0)
+  - GoogleMaps/Maps (7.2.0):
+    - GoogleMaps/Base
   - GoogleUtilities/AppDelegateSwizzler (7.10.0):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
@@ -39,12 +47,19 @@ PODS:
   - GoogleUtilities/Reachability (7.10.0):
     - GoogleUtilities/Logger
   - GTMSessionFetcher/Core (3.0.0)
+  - image_picker_ios (0.0.1):
+    - Flutter
+  - path_provider_ios (0.0.1):
+    - Flutter
   - PromisesObjC (2.1.1)
 
 DEPENDENCIES:
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
+  - google_maps_flutter_ios (from `.symlinks/plugins/google_maps_flutter_ios/ios`)
+  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
+  - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
 
 SPEC REPOS:
   trunk:
@@ -52,6 +67,7 @@ SPEC REPOS:
     - FirebaseAuth
     - FirebaseCore
     - FirebaseCoreInternal
+    - GoogleMaps
     - GoogleUtilities
     - GTMSessionFetcher
     - PromisesObjC
@@ -63,6 +79,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_core/ios"
   Flutter:
     :path: Flutter
+  google_maps_flutter_ios:
+    :path: ".symlinks/plugins/google_maps_flutter_ios/ios"
+  image_picker_ios:
+    :path: ".symlinks/plugins/image_picker_ios/ios"
+  path_provider_ios:
+    :path: ".symlinks/plugins/path_provider_ios/ios"
 
 SPEC CHECKSUMS:
   Firebase: f92fc551ead69c94168d36c2b26188263860acd9
@@ -72,10 +94,14 @@ SPEC CHECKSUMS:
   FirebaseCore: 988754646ab3bd4bdcb740f1bfe26b9f6c0d5f2a
   FirebaseCoreInternal: 29b76f784d607df8b2a1259d73c3f04f1210137b
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  google_maps_flutter_ios: 66201f392bf62d500f07670a30488a247b9bb5b9
+  GoogleMaps: 65ce5426e2398bb81433c8076f2ab6419c2c5537
   GoogleUtilities: bad72cb363809015b1f7f19beb1f1cd23c589f95
   GTMSessionFetcher: c1edebe64e9fb4e8f6415d018edf1fd3eac074a1
+  image_picker_ios: b786a5dcf033a8336a657191401bfdf12017dabb
+  path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
 
-PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
+PODFILE CHECKSUM: cc1f88378b4bfcf93a6ce00d2c587857c6008d3b
 
 COCOAPODS: 1.11.3

@@ -1,6 +1,8 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 Image logoWidget(String imagename) {
   return Image.asset(
@@ -92,3 +94,4 @@ String imgRandom() {
   int r = min + rnd.nextInt(max - min);
   return imgList[r].toString();
 }
+

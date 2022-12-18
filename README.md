@@ -29,3 +29,5 @@ Beginners Guide (VSCODE)
     - press 'control + x'
     - press 'y'
     - press 'enter'
+
+    (add permissions to android for photo picker)

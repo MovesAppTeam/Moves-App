@@ -45,6 +45,7 @@ dependencies:
   google_maps_flutter: ^2.2.2
   geolocator: ^9.0.2
   email_validator: ^2.1.17
+  syncfusion_flutter_calendar: ^20.3.61
 
 dev_dependencies:
   flutter_test:

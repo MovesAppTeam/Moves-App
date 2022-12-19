@@ -29,10 +29,11 @@ class _EditProfileState extends State<EditProfile> {
 
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text("Edit Profile", style: Theme.of(context).textTheme.headline4),
-        backgroundColor: Colors.teal,
-      ),
+          toolbarHeight: 50,
+          automaticallyImplyLeading: true,
+          title: Text("Edit Profile", style: Theme.of(context).textTheme.headline6),
+          backgroundColor: Colors.teal,
+        ),
       body: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
@@ -45,16 +46,7 @@ class _EditProfileState extends State<EditProfile> {
                     children: [
                       Stack(
                         children: [
-                          SizedBox(
-                            width: 100,
-                            height: 100,
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(100),
-                                child: Image(
-                                  image: AssetImage(user!.photoURL ??
-                                      "assets/solo-cup-logo.png"),
-                                )),
-                          ),
+                          profileImage(context, user!.photoURL ?? "assets/solo-cup-logo.png"),
                         ],
                       ),
                       const SizedBox(
@@ -65,19 +57,21 @@ class _EditProfileState extends State<EditProfile> {
                           print("Image picker pressed");
                                   final image = await ImagePicker()
                                       .pickImage(source: ImageSource.gallery);
-                                  user!
-                                      .updatePhotoURL(image?.path)
+                                  if (image != null) {
+                                    user!
+                                      .updatePhotoURL(image.path)
                                       .then((value) {
                                     FirebaseAuth.instance.currentUser!.reload().then((value) {
                                     Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    const EditProfile()))
+                                                    const BottomNav()))
                                         .then((value) {
                                     });
                                   });
                                   });
+                                  }
                         },
                         child: Text(
                           "Edit display photo",

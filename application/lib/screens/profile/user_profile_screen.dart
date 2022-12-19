@@ -1,3 +1,4 @@
+import 'package:application/reusable_widgets/reusable_widget.dart';
 import 'package:application/screens/Signin_screen.dart';
 import 'package:application/screens/bottom_navigation.dart';
 import 'package:application/screens/profile/edit_profile_screen.dart';
@@ -23,8 +24,9 @@ class _UserProfileState extends State<UserProfile> {
 
     return Scaffold(
         appBar: AppBar(
+          toolbarHeight: 50,
           automaticallyImplyLeading: false,
-          title: Text("Profile", style: Theme.of(context).textTheme.headline4),
+          title: Text("Profile", style: Theme.of(context).textTheme.headline6),
           backgroundColor: Colors.teal,
         ),
         body: Container(
@@ -39,16 +41,7 @@ class _UserProfileState extends State<UserProfile> {
                     children: [
                       Stack(
                         children: [
-                          SizedBox(
-                            width: 100,
-                            height: 100,
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(100),
-                                child: Image(
-                                  image: AssetImage(user!.photoURL ??
-                                      "assets/solo-cup-logo.png"),
-                                )),
-                          ),
+                          profileImage(context, user!.photoURL ?? "assets/solo-cup-logo.png"),
                           Positioned(
                             bottom: 0,
                             right: 0,
@@ -67,8 +60,9 @@ class _UserProfileState extends State<UserProfile> {
                                   print("Image picker pressed");
                                   final image = await ImagePicker()
                                       .pickImage(source: ImageSource.gallery);
-                                  user
-                                      .updatePhotoURL(image?.path)
+                                  if (image != null) {
+                                    user
+                                      .updatePhotoURL(image.path)
                                       .then((value) {
                                     FirebaseAuth.instance.currentUser!.reload().then((value) {
                                     Navigator.pushReplacement(
@@ -77,12 +71,10 @@ class _UserProfileState extends State<UserProfile> {
                                                 builder: (context) =>
                                                     const BottomNav()))
                                         .then((value) {
-                                      setState() {
-                                        user.photoURL == image?.path;
-                                      }
                                     });
                                   });
                                   });
+                                  }
                                 },
                               ),
                             ),

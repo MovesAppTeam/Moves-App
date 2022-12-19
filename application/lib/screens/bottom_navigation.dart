@@ -1,3 +1,5 @@
+import 'package:application/screens/calendar/calendar_screen.dart';
+import 'package:application/screens/chat/chat_screen.dart';
 import 'package:application/screens/home_screen.dart';
 import 'package:application/screens/map/map_screen.dart';
 import 'package:application/screens/profile/user_profile_screen.dart';
@@ -14,9 +16,9 @@ class _BottomNavState extends State<BottomNav> {
   int index = 2;
   final pages = [
     const MapScreen(),
-    const HomeScreen(),
+    const CalendarScreen(),
     const UserProfile(),
-    const HomeScreen(),
+    const ChatScreen(),
   ];
 
   @override

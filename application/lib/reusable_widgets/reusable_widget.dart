@@ -120,7 +120,11 @@ Row editProfileListItem(BuildContext context, TextEditingController controller,
             labelStyle: TextStyle(color: Colors.black.withOpacity(0.9)),
             floatingLabelBehavior: FloatingLabelBehavior.never,
           ),
-          keyboardType: !isPhone ? !isEmail ? TextInputType.multiline : TextInputType.emailAddress : TextInputType.number,
+          keyboardType: !isPhone
+              ? !isEmail
+                  ? TextInputType.multiline
+                  : TextInputType.emailAddress
+              : TextInputType.number,
           minLines: 1,
           maxLines: !isBio ? 1 : 1,
           onChanged: (value) {
@@ -135,16 +139,43 @@ Row editProfileListItem(BuildContext context, TextEditingController controller,
 }
 
 Future pickImg() async {
-    final user = FirebaseAuth.instance.currentUser;
-    try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+  final user = FirebaseAuth.instance.currentUser;
+  try {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
-      if (image == null) return;
+    if (image == null) return;
 
-      final imageTemp = File(image.path);
+    final imageTemp = File(image.path);
 
-      return image.path;
-    } catch (error) {
-      print(error);
-    }
+    return image.path;
+  } catch (error) {
+    print(error);
   }
+}
+
+Container profileImage(BuildContext context, String imageURL) {
+  return Container(
+    width: 100,
+    height: 100,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(100),
+      color: Colors.white,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.15),
+          blurRadius: 8,
+          spreadRadius: 6,
+        ),
+      ],
+    ),
+    child: SizedBox(
+      width: 100,
+      height: 100,
+      child: ClipRRect(
+          borderRadius: BorderRadius.circular(100),
+          child: Image(
+            image: AssetImage(imageURL),
+          )),
+    ),
+  );
+}

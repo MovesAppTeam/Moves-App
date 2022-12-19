@@ -1,4 +1,6 @@
 import 'package:application/screens/Signin_screen.dart';
+import 'package:application/screens/bottom_navigation.dart';
+import 'package:application/screens/profile/edit_profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:application/utils/color_utils.dart';
@@ -14,20 +16,6 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-  Future pickImg() async {
-    final user = FirebaseAuth.instance.currentUser;
-    try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-
-      if (image == null) return;
-
-      final imageTemp = File(image.path);
-
-      return image.path;
-    } catch (error) {
-      print(error);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,14 +60,29 @@ class _UserProfileState extends State<UserProfile> {
                                 color: Colors.white.withOpacity(0.8),
                               ),
                               child: IconButton(
-                                icon: Icon(Icons.app_registration,
+                                icon: Icon(Icons.create_outlined,
                                     size: 20,
                                     color: Colors.black.withOpacity(0.5)),
                                 onPressed: () async {
                                   print("Image picker pressed");
                                   final image = await ImagePicker()
                                       .pickImage(source: ImageSource.gallery);
-                                  user.updatePhotoURL(image?.path);
+                                  user
+                                      .updatePhotoURL(image?.path)
+                                      .then((value) {
+                                    FirebaseAuth.instance.currentUser!.reload().then((value) {
+                                    Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const BottomNav()))
+                                        .then((value) {
+                                      setState() {
+                                        user.photoURL == image?.path;
+                                      }
+                                    });
+                                  });
+                                  });
                                 },
                               ),
                             ),
@@ -99,7 +102,12 @@ class _UserProfileState extends State<UserProfile> {
                       SizedBox(
                         width: 200,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const EditProfile()));
+                          },
                           style: ElevatedButton.styleFrom(
                               backgroundColor: hexStringToColor("FFE9A0"),
                               side: BorderSide.none,
@@ -116,13 +124,18 @@ class _UserProfileState extends State<UserProfile> {
                         height: 10,
                       ),
                       ProfileListItem(
+                        title: "My Organizations",
+                        icon: Icons.assignment_outlined,
+                        onPress: () {},
+                      ),
+                      ProfileListItem(
                         title: "Settings",
                         icon: Icons.settings_outlined,
                         onPress: () {},
                       ),
                       ProfileListItem(
                         title: "Log Out",
-                        icon: Icons.settings_outlined,
+                        icon: Icons.web_asset_off_outlined,
                         textColor: Colors.black,
                         onPress: () {
                           FirebaseAuth.instance.signOut().then((value) {
@@ -167,8 +180,8 @@ class ProfileListItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(100),
             color: Colors.black.withOpacity(0.1),
           ),
-          child: const Icon(
-            Icons.settings_outlined,
+          child: Icon(
+            icon,
             color: Colors.black87,
           )),
       title: Text(title,

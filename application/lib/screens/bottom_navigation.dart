@@ -11,9 +11,10 @@ class BottomNav extends StatefulWidget {
 }
 
 class _BottomNavState extends State<BottomNav> {
-  int index = 0;
+  int index = 2;
   final pages = [
     const MapScreen(),
+    const HomeScreen(),
     const UserProfile(),
     const HomeScreen(),
   ];
@@ -33,6 +34,10 @@ class _BottomNavState extends State<BottomNav> {
                 icon: Icon(Icons.map_outlined),
                 selectedIcon: Icon(Icons.map),
                 label: "Map"),
+            NavigationDestination(
+                icon: Icon(Icons.calendar_month_outlined),
+                selectedIcon: Icon(Icons.calendar_month),
+                label: "Moves"),
             NavigationDestination(
                 icon: Icon(Icons.person_outline),
                 selectedIcon: Icon(Icons.person),

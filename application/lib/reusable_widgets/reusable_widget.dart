@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
@@ -95,3 +96,55 @@ String imgRandom() {
   return imgList[r].toString();
 }
 
+Row editProfileListItem(BuildContext context, TextEditingController controller,
+    String text, String? placeholder, bool isBio, bool isPhone, bool isEmail) {
+  return Row(
+    children: <Widget>[
+      Text(text, style: TextStyle(fontSize: 18)),
+      const SizedBox(
+        width: 12,
+      ),
+      Flexible(
+          child: SizedBox(
+        height: 30,
+        child: TextField(
+          controller: controller,
+          obscureText: false,
+          enableSuggestions: false,
+          autofocus: true,
+          autocorrect: false,
+          cursorColor: Colors.black,
+          style: TextStyle(color: Colors.black.withOpacity(0.9)),
+          decoration: InputDecoration(
+            labelText: placeholder ?? "",
+            labelStyle: TextStyle(color: Colors.black.withOpacity(0.9)),
+            floatingLabelBehavior: FloatingLabelBehavior.never,
+          ),
+          keyboardType: !isPhone ? !isEmail ? TextInputType.multiline : TextInputType.emailAddress : TextInputType.number,
+          minLines: 1,
+          maxLines: !isBio ? 1 : 1,
+          onChanged: (value) {
+            TextSelection previousSelection = controller.selection;
+            controller.text = value;
+            controller.selection = previousSelection;
+          },
+        ),
+      ))
+    ],
+  );
+}
+
+Future pickImg() async {
+    final user = FirebaseAuth.instance.currentUser;
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+      if (image == null) return;
+
+      final imageTemp = File(image.path);
+
+      return image.path;
+    } catch (error) {
+      print(error);
+    }
+  }

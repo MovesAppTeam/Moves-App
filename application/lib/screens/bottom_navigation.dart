@@ -13,41 +13,80 @@ class BottomNav extends StatefulWidget {
 }
 
 class _BottomNavState extends State<BottomNav> {
-  int index = 2;
+  final _pageViewController = PageController(initialPage: 3);
+
+  int _activePage = 2;
+
+  @override
+  void dispose() {
+    _pageViewController.dispose();
+    super.dispose();
+  }
+
+  int index = 3;
   final pages = [
     const MapScreen(),
     const CalendarScreen(),
-    const UserProfile(),
     const ChatScreen(),
+    const ChatScreen(),
+    const UserProfile(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: pages[index],
-      bottomNavigationBar: NavigationBar(
-          height: 60,
-          selectedIndex: index,
-          onDestinationSelected: (index) => setState(() {
-                this.index = index;
-              }),
-          destinations: const [
-            NavigationDestination(
+      body: PageView(
+        allowImplicitScrolling: true,
+        physics: const NeverScrollableScrollPhysics(),
+        controller: _pageViewController,
+        children: const <Widget>[
+          MapScreen(),
+          CalendarScreen(),
+          ChatScreen(),
+          ChatScreen(),
+          UserProfile(),
+        ],
+        onPageChanged: (index) {
+          setState(() {
+            _activePage = index;
+          });
+        },
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+          unselectedItemColor: Colors.white70,
+          selectedItemColor: Colors.white,
+          currentIndex: _activePage,
+          onTap: (index) {
+            _pageViewController.animateToPage(index,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.bounceOut);
+          },
+          items: const [
+            BottomNavigationBarItem(
                 icon: Icon(Icons.map_outlined),
-                selectedIcon: Icon(Icons.map),
-                label: "Map"),
-            NavigationDestination(
+                activeIcon: Icon(Icons.map),
+                label: "Map",
+                backgroundColor: Colors.black),
+            BottomNavigationBarItem(
                 icon: Icon(Icons.calendar_month_outlined),
-                selectedIcon: Icon(Icons.calendar_month),
-                label: "Moves"),
-            NavigationDestination(
-                icon: Icon(Icons.person_outline),
-                selectedIcon: Icon(Icons.person),
-                label: "Profile"),
-            NavigationDestination(
+                activeIcon: Icon(Icons.calendar_month),
+                label: "Moves",
+                backgroundColor: Colors.black),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.whatshot_outlined),
+                activeIcon: Icon(Icons.whatshot),
+                label: "Explore",
+                backgroundColor: Colors.black),
+            BottomNavigationBarItem(
                 icon: Icon(Icons.chat_outlined),
-                selectedIcon: Icon(Icons.chat_rounded),
-                label: "chat"),
+                activeIcon: Icon(Icons.chat_rounded),
+                label: "Chat",
+                backgroundColor: Colors.black),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.person_outline),
+                activeIcon: Icon(Icons.person),
+                label: "Profile",
+                backgroundColor: Colors.black),
           ]),
     );
   }

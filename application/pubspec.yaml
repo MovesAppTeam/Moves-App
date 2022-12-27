@@ -46,6 +46,8 @@ dependencies:
   geolocator: ^9.0.2
   email_validator: ^2.1.17
   syncfusion_flutter_calendar: ^20.3.61
+  image_cropper: ^3.0.1
+  image_picker_widget: ^2.2.2
 
 dev_dependencies:
   flutter_test:

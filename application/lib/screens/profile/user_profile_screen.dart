@@ -65,12 +65,8 @@ class _UserProfileState extends State<UserProfile> {
                                       .updatePhotoURL(image.path)
                                       .then((value) {
                                     FirebaseAuth.instance.currentUser!.reload().then((value) {
-                                    Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const BottomNav()))
-                                        .then((value) {
+                                    setState(() {
+                                      
                                     });
                                   });
                                   });

@@ -58,13 +58,12 @@ class _SignInScreenState extends State<SignInScreen> {
                               .then((value) {
                             print("Logged in successfully");
                             Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => BottomNav()));
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BottomNav()));
                           }).onError((error, stackTrace) {
                             print("Error ${error.toString()}");
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               /// need to set following properties for best effect of awesome_snackbar_content
                               elevation: 0,
                               behavior: SnackBarBehavior.floating,
@@ -76,20 +75,13 @@ class _SignInScreenState extends State<SignInScreen> {
 
                                 /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
                                 contentType: ContentType.failure,
-                  ),
-                )
-                            );
-
-
+                              ),
+                            ));
                           });
                         }),
                         signUpOption()
                       ],
-                    )
-                    )
-                    )
-                    )
-                    );
+                    )))));
   }
 
   Row signUpOption() {

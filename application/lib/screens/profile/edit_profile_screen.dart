@@ -29,11 +29,12 @@ class _EditProfileState extends State<EditProfile> {
 
     return Scaffold(
       appBar: AppBar(
-          toolbarHeight: 50,
-          automaticallyImplyLeading: true,
-          title: Text("Edit Profile", style: Theme.of(context).textTheme.headline6),
-          backgroundColor: Colors.teal,
-        ),
+        toolbarHeight: 50,
+        automaticallyImplyLeading: true,
+        title:
+            Text("Edit Profile", style: Theme.of(context).textTheme.headline6),
+        backgroundColor: Colors.teal,
+      ),
       body: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
@@ -46,7 +47,8 @@ class _EditProfileState extends State<EditProfile> {
                     children: [
                       Stack(
                         children: [
-                          profileImage(context, user!.photoURL ?? "assets/solo-cup-logo.png"),
+                          profileImage(context,
+                              user!.photoURL ?? "assets/solo-cup-logo.png"),
                         ],
                       ),
                       const SizedBox(
@@ -55,23 +57,17 @@ class _EditProfileState extends State<EditProfile> {
                       GestureDetector(
                         onTap: () async {
                           print("Image picker pressed");
-                                  final image = await ImagePicker()
-                                      .pickImage(source: ImageSource.gallery);
-                                  if (image != null) {
-                                    user!
-                                      .updatePhotoURL(image.path)
-                                      .then((value) {
-                                    FirebaseAuth.instance.currentUser!.reload().then((value) {
-                                    Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const BottomNav()))
-                                        .then((value) {
-                                    });
-                                  });
-                                  });
-                                  }
+                          final image = await ImagePicker()
+                              .pickImage(source: ImageSource.gallery);
+                          if (image != null) {
+                            user!.updatePhotoURL(image.path).then((value) {
+                              FirebaseAuth.instance.currentUser!
+                                  .reload()
+                                  .then((value) {
+                                setState(() {});
+                              });
+                            });
+                          }
                         },
                         child: Text(
                           "Edit display photo",
@@ -140,110 +136,123 @@ class _EditProfileState extends State<EditProfile> {
                                   ),
                                 ));
                               } else {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text(
-                                          "Enter Password to change Email"),
-                                      content: TextField(
-                                        controller: _passwordTextController,
-                                        obscureText: true,
-                                        enableSuggestions: false,
-                                        autofocus: false,
-                                        autocorrect: false,
-                                        cursorColor: Colors.black,
-                                        style: TextStyle(
-                                            color:
-                                                Colors.black.withOpacity(0.9)),
-                                        decoration: InputDecoration(
-                                          labelText: "Password",
-                                          labelStyle: TextStyle(
-                                              color: Colors.black
-                                                  .withOpacity(0.9)),
-                                          floatingLabelBehavior:
-                                              FloatingLabelBehavior.never,
-                                        ),
-                                        keyboardType: TextInputType.name,
-                                        minLines: 1,
-                                        maxLines: 1,
-                                        onChanged: (value) {
-                                          TextSelection previousSelection =
-                                              _passwordTextController.selection;
-                                          _passwordTextController.text = value;
-                                          _passwordTextController.selection =
-                                              previousSelection;
-                                        },
-                                      ),
-                                      actions: [
-                                        okButton = TextButton(
-                                          child: Text("OK"),
-                                          onPressed: () async {
-                                            AuthCredential credential =
-                                                EmailAuthProvider.credential(
-                                                    email: user!.email!,
-                                                    password:
-                                                        _passwordTextController
-                                                            .text);
-                                            await FirebaseAuth
-                                                .instance.currentUser!
-                                                .reauthenticateWithCredential(
-                                                    credential)
-                                                .onError((error, stackTrace) {
-                                                  // ignore: todo
-                                                  // TODO: do something if password is wrong
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(SnackBar(
-                                                    /// need to set following properties for best effect of awesome_snackbar_content
-                                                    elevation: 0,
-                                                    behavior: SnackBarBehavior.floating,
-                                                    backgroundColor: Colors.transparent,
-                                                    content: AwesomeSnackbarContent(
-                                                      title: 'On Snap!',
-                                                      message: "Incorrect Password! Try again.",
+                                (user!.email != _emailTextController.text)
+                                    ? showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text(
+                                                "Enter Password to change Email"),
+                                            content: TextField(
+                                              controller:
+                                                  _passwordTextController,
+                                              obscureText: true,
+                                              enableSuggestions: false,
+                                              autofocus: false,
+                                              autocorrect: false,
+                                              cursorColor: Colors.black,
+                                              style: TextStyle(
+                                                  color: Colors.black
+                                                      .withOpacity(0.9)),
+                                              decoration: InputDecoration(
+                                                labelText: "Password",
+                                                labelStyle: TextStyle(
+                                                    color: Colors.black
+                                                        .withOpacity(0.9)),
+                                                floatingLabelBehavior:
+                                                    FloatingLabelBehavior.never,
+                                              ),
+                                              keyboardType: TextInputType.name,
+                                              minLines: 1,
+                                              maxLines: 1,
+                                              onChanged: (value) {
+                                                TextSelection
+                                                    previousSelection =
+                                                    _passwordTextController
+                                                        .selection;
+                                                _passwordTextController.text =
+                                                    value;
+                                                _passwordTextController
+                                                        .selection =
+                                                    previousSelection;
+                                              },
+                                            ),
+                                            actions: [
+                                              okButton = TextButton(
+                                                child: Text("OK"),
+                                                onPressed: () async {
+                                                  AuthCredential credential =
+                                                      EmailAuthProvider.credential(
+                                                          email: user!.email!,
+                                                          password:
+                                                              _passwordTextController
+                                                                  .text);
+                                                  await FirebaseAuth
+                                                      .instance.currentUser!
+                                                      .reauthenticateWithCredential(
+                                                          credential)
+                                                      .onError(
+                                                          (error, stackTrace) {
+                                                    // ignore: todo
+                                                    // TODO: do something if password is wrong
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(SnackBar(
+                                                      /// need to set following properties for best effect of awesome_snackbar_content
+                                                      elevation: 0,
+                                                      behavior: SnackBarBehavior
+                                                          .floating,
+                                                      backgroundColor:
+                                                          Colors.transparent,
+                                                      content:
+                                                          AwesomeSnackbarContent(
+                                                        title: 'On Snap!',
+                                                        message:
+                                                            "Incorrect Password! Try again.",
 
-                                                      /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
-                                                      contentType: ContentType.failure,
-                                                    ),
-                                                  ));
-                                              throw NullThrownError(); 
-                                            }).then((value) async {
-                                              await user!
-                                                  .updateEmail(
-                                                      _emailTextController.text)
-                                                  .then((value) {
-                                                FirebaseAuth
-                                                    .instance.currentUser!
-                                                    .reload()
-                                                    .then((value) {
-                                                  Navigator.pushReplacement(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              const BottomNav())).then(
-                                                      (value) {
-                                                    setState() {
-                                                      user!.displayName ==
-                                                          _usernameTextController
-                                                              .text;
-                                                      user!.email ==
-                                                          _emailTextController
-                                                              .text;
-                                                    }
+                                                        /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
+                                                        contentType:
+                                                            ContentType.failure,
+                                                      ),
+                                                    ));
+                                                    throw NullThrownError();
+                                                  }).then((value) async {
+                                                    await user!
+                                                        .updateEmail(
+                                                            _emailTextController
+                                                                .text)
+                                                        .then((value) {
+                                                      FirebaseAuth
+                                                          .instance.currentUser!
+                                                          .reload()
+                                                          .then((value) {
+                                                        Navigator.pushReplacement(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        const BottomNav()));
+                                                      });
+                                                    });
                                                   });
-                                                });
-                                              });
-                                            });
-                                          },
-                                        )
-                                      ],
-                                    );
-                                  },
-                                );
+                                                },
+                                              )
+                                            ],
+                                          );
+                                        },
+                                      )
+                                    : FirebaseAuth.instance.currentUser!
+                                        .reload()
+                                        .then((value) {
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const BottomNav()));
+                                      });
+
+                                //TODO: update user phone number
                               }
-
-                              //TODO: update user phone number
-
                             } catch (error) {
                               print(error);
                             }

@@ -1,7 +1,12 @@
+import 'dart:io';
+
+import 'package:application/data_class/user_class.dart';
 import 'package:application/reusable_widgets/reusable_widget.dart';
 import 'package:application/screens/bottom_navigation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import '../utils/color_utils.dart';
 import 'home_screen.dart';
@@ -14,6 +19,10 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final db = FirebaseFirestore.instance.collection("userList");
+  final storage = FirebaseStorage.instance;
+  late final File file;
+  late final NewUser newUser;
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _userNameTextController = TextEditingController();
@@ -81,6 +90,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               print(error);
                             }
                             print("Created New Account");
+                            newUser = NewUser(
+                                imagePath: user!.photoURL ??
+                                    "assets/solo-cup-logo.png",
+                                name: _userNameTextController.text,
+                                phoneNumber: "",
+                                email: _emailTextController.text,
+                                about: "");
+                            db
+                                .doc(_userNameTextController.text)
+                                .set(newUser.toMap());
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(

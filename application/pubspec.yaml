@@ -51,6 +51,7 @@ dependencies:
   keyboard_actions: ^4.1.0
   phone_number: ^1.0.0
   cloud_firestore: ^4.3.0
+  firebase_storage: ^11.0.9
 
 dev_dependencies:
   flutter_test:

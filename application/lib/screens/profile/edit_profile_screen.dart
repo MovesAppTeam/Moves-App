@@ -3,6 +3,7 @@ import 'package:application/screens/bottom_navigation.dart';
 import 'package:application/screens/profile/user_profile_screen.dart';
 import 'package:application/utils/color_utils.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
@@ -16,6 +17,7 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  final db = FirebaseFirestore.instance.collection("userList");
   final user = FirebaseAuth.instance.currentUser;
   TextEditingController _usernameTextController = TextEditingController();
   TextEditingController _emailTextController = TextEditingController();
@@ -244,6 +246,10 @@ class _EditProfileState extends State<EditProfile> {
                                     : FirebaseAuth.instance.currentUser!
                                         .reload()
                                         .then((value) {
+                                        if (_bioTextController.text != "") {
+                                          db.doc(user!.displayName).update(
+                                            {"bio": _bioTextController.text});
+                                        }
                                         Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(

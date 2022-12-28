@@ -8,8 +8,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:application/utils/color_utils.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 import 'dart:async';
+
+import 'package:path_provider/path_provider.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -19,10 +23,13 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-  late final XFile? image;
-
   @override
   Widget build(BuildContext context) {
+    late final XFile? image;
+    late final String imgPath;
+    late final myOrgList;
+    final db = FirebaseFirestore.instance.collection("userList");
+    final storage = FirebaseStorage.instance;
     final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
@@ -65,6 +72,8 @@ class _UserProfileState extends State<UserProfile> {
                                   image = await ImagePicker()
                                       .pickImage(source: ImageSource.gallery);
                                   if (image != null) {
+                                    File file = File(image!.path);
+                                    storage.ref().putFile(file);
                                     user
                                         .updatePhotoURL(image!.path)
                                         .then((value) {

@@ -6,6 +6,7 @@ import 'package:application/reusable_widgets/reusable_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -18,6 +19,7 @@ class CreateOrg extends StatefulWidget {
 }
 
 class _CreateOrgState extends State<CreateOrg> {
+  final db = FirebaseFirestore.instance.collection("Organizations");
   final user = FirebaseAuth.instance.currentUser;
   late final Organization org;
   final List _admins = [];
@@ -156,6 +158,7 @@ class _CreateOrgState extends State<CreateOrg> {
                       totalMembers: _allMembers,
                       privacy: _privacy,
                       bio: _bioTextController.text);
+                  db.doc(_nameTextController.text).set(org.toMap());
                   // last thing
                   Navigator.push(
                       context,

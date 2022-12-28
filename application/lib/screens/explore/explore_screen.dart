@@ -3,7 +3,9 @@ import 'package:application/screens/organization/create_organization.dart';
 import 'package:application/screens/signin_screen.dart';
 import 'package:application/utils/color_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:paginated_search_bar/paginated_search_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:paginated_search_bar/paginated_search_bar_state_property.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -22,35 +24,32 @@ class _ExploreScreenState extends State<ExploreScreen> {
           title: Text("Explore", style: Theme.of(context).textTheme.headline6),
           backgroundColor: Colors.teal,
         ),
-        body: Container(
-            width: MediaQuery.of(context).size.width,
-            height: 50,
-            margin: const EdgeInsets.fromLTRB(15, 10, 15, 20),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(90)),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const CreateOrg()));
-              },
-              style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith((states) {
-                    if (states.contains(MaterialState.pressed)) {
-                      return Colors.black26;
-                    }
-                    return hexStringToColor('FD8A8A');
-                  }),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)))),
-              child: const Text(
-                'Create Organization',
-                style: TextStyle(
-                    color: Colors.black87,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
-              ),
-            )));
+        body: PaginatedSearchBar<Text>(
+          maxHeight: 300,
+          hintText: 'Search',
+          headerBuilderState:
+              PaginatedSearchBarBuilderStateProperty.empty((context) {
+            return const Text(
+                "I'm a header that only shows when the results are empty!");
+          }),
+          emptyBuilder: (context) {
+            return const Text("I'm an empty state!");
+          },
+          onSearch: ({
+            required pageIndex,
+            required pageSize,
+            required searchQuery,
+          }) async {
+            // Call your search API to return a list of items
+            return [Text("item1")];
+          },
+          itemBuilder: (
+            context, {
+            required item,
+            required index,
+          }) {
+            return Text("item1");
+          },
+        ));
   }
 }

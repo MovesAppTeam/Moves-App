@@ -52,6 +52,7 @@ dependencies:
   phone_number: ^1.0.0
   cloud_firestore: ^4.3.0
   firebase_storage: ^11.0.9
+  paginated_search_bar: ^1.1.2
 
 dev_dependencies:
   flutter_test:

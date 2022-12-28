@@ -19,9 +19,17 @@ class CreateOrg extends StatefulWidget {
 }
 
 class _CreateOrgState extends State<CreateOrg> {
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   final db = FirebaseFirestore.instance.collection("Organizations");
+  final userOrgData = FirebaseFirestore.instance.collection("userList");
   final user = FirebaseAuth.instance.currentUser;
-  late final Organization org;
+  Organization? org;
+  Map<String, dynamic>? userOrgMap;
+  late List _userList = [];
   final List _admins = [];
   final List _managers = [];
   final List _members = [];
@@ -35,8 +43,6 @@ class _CreateOrgState extends State<CreateOrg> {
   TextEditingController _bioTextController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    _admins.add(user!.displayName);
-    _allMembers.add(user!.displayName);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -79,6 +85,7 @@ class _CreateOrgState extends State<CreateOrg> {
                               .pickImage(source: ImageSource.gallery);
                           if (image != null) {
                             _img = image.path;
+                            setState(() {});
                           }
                         },
                       ),
@@ -149,6 +156,8 @@ class _CreateOrgState extends State<CreateOrg> {
                 const SizedBox(height: 10),
                 defaultButton(context, 'Done', hexStringToColor("FFE9A0"), 200,
                     () {
+                  _admins.add(user!.displayName);
+                  _allMembers.add(user!.displayName);
                   org = Organization(
                       imagePath: _img ?? "assets/solo-cup-logo.png",
                       name: _nameTextController.text,
@@ -158,8 +167,15 @@ class _CreateOrgState extends State<CreateOrg> {
                       totalMembers: _allMembers,
                       privacy: _privacy,
                       bio: _bioTextController.text);
-                  db.doc(_nameTextController.text).set(org.toMap());
-                  // last thing
+                  db.doc(_nameTextController.text).set(org!.toMap());
+                  userOrgData.doc(user!.displayName).get().then((value) {
+                    userOrgMap = value.data();
+                    _userList = userOrgMap!.putIfAbsent("myOrgs", () => null);
+                    _userList.add(_nameTextController.text);
+                    userOrgData
+                      .doc(user!.displayName)
+                      .update({"myOrgs": _userList});
+                  });
                   Navigator.push(
                       context,
                       MaterialPageRoute(

@@ -1,25 +1,29 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
+
 class NewUser {
   final String imagePath;
   final String name;
   final String phoneNumber;
   final String email;
+  final List myOrgs;
   final String about;
   NewUser({
     required this.imagePath,
     required this.name,
     required this.phoneNumber,
     required this.email,
+    required this.myOrgs,
     required this.about,
   });
-  
 
   NewUser copyWith({
     String? imagePath,
     String? name,
     String? phoneNumber,
     String? email,
+    List? myOrgs,
     String? about,
   }) {
     return NewUser(
@@ -27,6 +31,7 @@ class NewUser {
       name: name ?? this.name,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       email: email ?? this.email,
+      myOrgs: myOrgs ?? this.myOrgs,
       about: about ?? this.about,
     );
   }
@@ -37,6 +42,7 @@ class NewUser {
       'name': name,
       'phoneNumber': phoneNumber,
       'email': email,
+      'myOrgs': myOrgs,
       'about': about,
     };
   }
@@ -47,6 +53,7 @@ class NewUser {
       name: map['name'] ?? '',
       phoneNumber: map['phoneNumber'] ?? '',
       email: map['email'] ?? '',
+      myOrgs: List.from(map['myOrgs']),
       about: map['about'] ?? '',
     );
   }
@@ -57,18 +64,20 @@ class NewUser {
 
   @override
   String toString() {
-    return 'NewUser(imagePath: $imagePath, name: $name, phoneNumber: $phoneNumber, email: $email, about: $about)';
+    return 'NewUser(imagePath: $imagePath, name: $name, phoneNumber: $phoneNumber, email: $email, myOrgs: $myOrgs, about: $about)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
+    final listEquals = const DeepCollectionEquality().equals;
   
     return other is NewUser &&
       other.imagePath == imagePath &&
       other.name == name &&
       other.phoneNumber == phoneNumber &&
       other.email == email &&
+      listEquals(other.myOrgs, myOrgs) &&
       other.about == about;
   }
 
@@ -78,6 +87,7 @@ class NewUser {
       name.hashCode ^
       phoneNumber.hashCode ^
       email.hashCode ^
+      myOrgs.hashCode ^
       about.hashCode;
   }
 }

@@ -228,6 +228,18 @@ class _EditProfileState extends State<EditProfile> {
                                                           .instance.currentUser!
                                                           .reload()
                                                           .then((value) {
+                                                        if (_bioTextController
+                                                                .text !=
+                                                            "") {
+                                                          db
+                                                              .doc(user!
+                                                                  .displayName)
+                                                              .update({
+                                                            "bio":
+                                                                _bioTextController
+                                                                    .text
+                                                          });
+                                                        }
                                                         Navigator.pushReplacement(
                                                             context,
                                                             MaterialPageRoute(
@@ -248,7 +260,7 @@ class _EditProfileState extends State<EditProfile> {
                                         .then((value) {
                                         if (_bioTextController.text != "") {
                                           db.doc(user!.displayName).update(
-                                            {"bio": _bioTextController.text});
+                                              {"bio": _bioTextController.text});
                                         }
                                         Navigator.pushReplacement(
                                             context,

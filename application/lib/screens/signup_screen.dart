@@ -21,6 +21,7 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final db = FirebaseFirestore.instance.collection("userList");
   final storage = FirebaseStorage.instance;
+  final List _orgList = [];
   late final File file;
   late final NewUser newUser;
   TextEditingController _emailTextController = TextEditingController();
@@ -96,6 +97,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 name: _userNameTextController.text,
                                 phoneNumber: "",
                                 email: _emailTextController.text,
+                                myOrgs: _orgList,
                                 about: "");
                             db
                                 .doc(_userNameTextController.text)

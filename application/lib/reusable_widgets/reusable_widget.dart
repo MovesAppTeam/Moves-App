@@ -62,7 +62,7 @@ TextField reusableTextFieldnoIcon(
             borderRadius: BorderRadius.circular(30.0),
             borderSide: const BorderSide(width: 0, style: BorderStyle.none)),
       ),
-      keyboardType: TextInputType.name);
+      keyboardType: TextInputType.text);
 }
 
 Container signInSignUpButton(

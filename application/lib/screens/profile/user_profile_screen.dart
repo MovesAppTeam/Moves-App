@@ -24,13 +24,21 @@ class UserProfile extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfile> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     late final XFile? image;
-    late final String imgPath;
     late final myOrgList;
     final db = FirebaseFirestore.instance.collection("userList");
     final storage = FirebaseStorage.instance;
     final user = FirebaseAuth.instance.currentUser;
+
+    late Future<DocumentSnapshot<Map<String, dynamic>>>? bio =
+        db.doc(user!.displayName).get();
 
     return Scaffold(
         appBar: AppBar(
@@ -97,6 +105,22 @@ class _UserProfileState extends State<UserProfile> {
                           style: Theme.of(context).textTheme.headline4),
                       Text(user.email ?? "Email",
                           style: Theme.of(context).textTheme.bodyText2),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      FutureBuilder(
+                          future: bio,
+                          builder: ((context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.done) {
+                              final about = snapshot.data!.data();
+                              if (about!.containsKey("bio")) {
+                                return Text(about["bio"]);
+                              }
+                            }
+                            return const Text(
+                                "The was a problem displaying bio");
+                          })),
                       const SizedBox(
                         height: 20,
                       ),

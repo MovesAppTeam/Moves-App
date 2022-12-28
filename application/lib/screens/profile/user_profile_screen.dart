@@ -2,6 +2,8 @@ import 'package:application/reusable_widgets/reusable_widget.dart';
 import 'package:application/screens/Signin_screen.dart';
 import 'package:application/screens/bottom_navigation.dart';
 import 'package:application/screens/profile/edit_profile_screen.dart';
+import 'package:application/screens/profile/my_organizations/my_organizations.dart';
+import 'package:application/screens/profile/settings/settings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:application/utils/color_utils.dart';
@@ -17,6 +19,7 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+  late final XFile? image;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +44,8 @@ class _UserProfileState extends State<UserProfile> {
                     children: [
                       Stack(
                         children: [
-                          profileImage(context, user!.photoURL ?? "assets/solo-cup-logo.png"),
+                          profileImage(context,
+                              user!.photoURL ?? "assets/solo-cup-logo.png"),
                           Positioned(
                             bottom: 0,
                             right: 0,
@@ -58,18 +62,18 @@ class _UserProfileState extends State<UserProfile> {
                                     color: Colors.black.withOpacity(0.5)),
                                 onPressed: () async {
                                   print("Image picker pressed");
-                                  final image = await ImagePicker()
+                                  image = await ImagePicker()
                                       .pickImage(source: ImageSource.gallery);
                                   if (image != null) {
                                     user
-                                      .updatePhotoURL(image.path)
-                                      .then((value) {
-                                    FirebaseAuth.instance.currentUser!.reload().then((value) {
-                                    setState(() {
-                                      
+                                        .updatePhotoURL(image!.path)
+                                        .then((value) {
+                                      FirebaseAuth.instance.currentUser!
+                                          .reload()
+                                          .then((value) {
+                                        setState(() {});
+                                      });
                                     });
-                                  });
-                                  });
                                   }
                                 },
                               ),
@@ -114,12 +118,23 @@ class _UserProfileState extends State<UserProfile> {
                       ProfileListItem(
                         title: "My Organizations",
                         icon: Icons.assignment_outlined,
-                        onPress: () {},
+                        onPress: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const MyOrgs()));
+                        },
                       ),
                       ProfileListItem(
                         title: "Settings",
                         icon: Icons.settings_outlined,
-                        onPress: () {},
+                        onPress: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const SettingsScreen()));
+                        },
                       ),
                       ProfileListItem(
                         title: "Log Out",

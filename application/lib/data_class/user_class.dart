@@ -3,11 +3,13 @@ import 'dart:convert';
 class User {
   final String imagePath;
   final String name;
+  final String phoneNumber;
   final String email;
   final String about;
   User({
     required this.imagePath,
     required this.name,
+    required this.phoneNumber,
     required this.email,
     required this.about,
   });
@@ -15,12 +17,14 @@ class User {
   User copyWith({
     String? imagePath,
     String? name,
+    String? phoneNumber,
     String? email,
     String? about,
   }) {
     return User(
       imagePath: imagePath ?? this.imagePath,
       name: name ?? this.name,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
       email: email ?? this.email,
       about: about ?? this.about,
     );
@@ -30,6 +34,7 @@ class User {
     return {
       'imagePath': imagePath,
       'name': name,
+      'phoneNumber': phoneNumber,
       'email': email,
       'about': about,
     };
@@ -39,6 +44,7 @@ class User {
     return User(
       imagePath: map['imagePath'] ?? '',
       name: map['name'] ?? '',
+      phoneNumber: map['phoneNumber'] ?? '',
       email: map['email'] ?? '',
       about: map['about'] ?? '',
     );
@@ -50,7 +56,7 @@ class User {
 
   @override
   String toString() {
-    return 'User(imagePath: $imagePath, name: $name, email: $email, about: $about)';
+    return 'User(imagePath: $imagePath, name: $name, phoneNumber: $phoneNumber, email: $email, about: $about)';
   }
 
   @override
@@ -60,6 +66,7 @@ class User {
     return other is User &&
       other.imagePath == imagePath &&
       other.name == name &&
+      other.phoneNumber == phoneNumber &&
       other.email == email &&
       other.about == about;
   }
@@ -68,6 +75,7 @@ class User {
   int get hashCode {
     return imagePath.hashCode ^
       name.hashCode ^
+      phoneNumber.hashCode ^
       email.hashCode ^
       about.hashCode;
   }

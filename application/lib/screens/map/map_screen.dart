@@ -52,8 +52,6 @@ class _MapScreenState extends State<MapScreen> {
                       zoom: 14),
                   myLocationButtonEnabled: true,
                   myLocationEnabled: true,
-                  zoomControlsEnabled: true,
-                  zoomGesturesEnabled: true,
                 );
               }
             }));

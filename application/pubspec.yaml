@@ -48,6 +48,9 @@ dependencies:
   syncfusion_flutter_calendar: ^20.3.61
   image_cropper: ^3.0.1
   image_picker_widget: ^2.2.2
+  keyboard_actions: ^4.1.0
+  phone_number: ^1.0.0
+  cloud_firestore: ^4.3.0
 
 dev_dependencies:
   flutter_test:

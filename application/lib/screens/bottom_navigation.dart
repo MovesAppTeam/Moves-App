@@ -1,5 +1,6 @@
 import 'package:application/screens/calendar/calendar_screen.dart';
 import 'package:application/screens/chat/chat_screen.dart';
+import 'package:application/screens/explore/explore_screen.dart';
 import 'package:application/screens/home_screen.dart';
 import 'package:application/screens/map/map_screen.dart';
 import 'package:application/screens/profile/user_profile_screen.dart';
@@ -13,7 +14,7 @@ class BottomNav extends StatefulWidget {
 }
 
 class _BottomNavState extends State<BottomNav> {
-  final _pageViewController = PageController(initialPage: 3);
+  final _pageViewController = PageController(initialPage: 2);
 
   int _activePage = 2;
 
@@ -23,14 +24,7 @@ class _BottomNavState extends State<BottomNav> {
     super.dispose();
   }
 
-  int index = 3;
-  final pages = [
-    const MapScreen(),
-    const CalendarScreen(),
-    const ChatScreen(),
-    const ChatScreen(),
-    const UserProfile(),
-  ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +36,7 @@ class _BottomNavState extends State<BottomNav> {
         children: const <Widget>[
           MapScreen(),
           CalendarScreen(),
-          ChatScreen(),
+          ExploreScreen(),
           ChatScreen(),
           UserProfile(),
         ],
@@ -59,7 +53,7 @@ class _BottomNavState extends State<BottomNav> {
           onTap: (index) {
             _pageViewController.animateToPage(index,
                 duration: const Duration(milliseconds: 200),
-                curve: Curves.bounceOut);
+                curve: Curves.easeInOutCubicEmphasized);
           },
           items: const [
             BottomNavigationBarItem(

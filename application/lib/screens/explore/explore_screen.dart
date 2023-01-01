@@ -29,8 +29,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
           hintText: 'Search',
           headerBuilderState:
               PaginatedSearchBarBuilderStateProperty.empty((context) {
-            return const Text(
-                "I'm a header that only shows when the results are empty!");
+            return const Center(
+              child: Text(
+                  "Explore page is empty"),
+            );
           }),
           emptyBuilder: (context) {
             return const Text("I'm an empty state!");

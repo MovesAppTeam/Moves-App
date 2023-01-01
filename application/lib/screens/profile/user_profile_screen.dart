@@ -1,18 +1,19 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:application/reusable_widgets/reusable_widget.dart';
 import 'package:application/screens/Signin_screen.dart';
 import 'package:application/screens/bottom_navigation.dart';
 import 'package:application/screens/profile/edit_profile_screen.dart';
 import 'package:application/screens/profile/my_organizations/my_organizations.dart';
 import 'package:application/screens/profile/settings/settings.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:application/utils/color_utils.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'dart:io';
-import 'dart:async';
-
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 class UserProfile extends StatefulWidget {
@@ -38,7 +39,8 @@ class _UserProfileState extends State<UserProfile> {
     final user = FirebaseAuth.instance.currentUser;
 
     late Future<DocumentSnapshot<Map<String, dynamic>>>? bio =
-        db.doc(user!.displayName).get();
+        db.doc(user!.uid).get();
+    late String image_url;
 
     return Scaffold(
         appBar: AppBar(
@@ -80,10 +82,40 @@ class _UserProfileState extends State<UserProfile> {
                                   image = await ImagePicker()
                                       .pickImage(source: ImageSource.gallery);
                                   if (image != null) {
-                                    File file = File(image!.path);
-                                    storage.ref().putFile(file);
+                                    try {
+                                      var imageFile = File(image!.path);
+                                      String fileName = imageFile.path;
+                                      FirebaseStorage storage =
+                                          FirebaseStorage.instance;
+                                      Reference ref = storage
+                                          .ref(user.uid)
+                                          .child("ProfileImage-${user.uid}");
+
+                                      UploadTask uploadTask =
+                                          ref.putFile(imageFile);
+                                      await uploadTask.whenComplete(() async {
+                                        var url = await ref.getDownloadURL();
+                                        image_url = url.toString();
+
+                                        Map<String, dynamic> demodata = {
+                                          "image_url": image_url
+                                        };
+                                        CollectionReference
+                                            collectionreference =
+                                            FirebaseFirestore.instance
+                                                .collection("userList");
+                                        collectionreference
+                                            .doc(user.uid)
+                                            .update({"imagePath": demodata});
+                                      }).catchError((onError) {
+                                        print(onError);
+                                      });
+                                    } catch (error) {
+                                      print(error);
+                                    }
+
                                     user
-                                        .updatePhotoURL(image!.path)
+                                        .updatePhotoURL(image_url)
                                         .then((value) {
                                       FirebaseAuth.instance.currentUser!
                                           .reload()
@@ -114,12 +146,11 @@ class _UserProfileState extends State<UserProfile> {
                             if (snapshot.connectionState ==
                                 ConnectionState.done) {
                               final about = snapshot.data!.data();
-                              if (about!.containsKey("bio")) {
-                                return Text(about["bio"]);
+                              if (about!.containsKey("about")) {
+                                return Text(about["about"]);
                               }
                             }
-                            return const Text(
-                                "The was a problem displaying bio");
+                            return const Text("");
                           })),
                       const SizedBox(
                         height: 20,

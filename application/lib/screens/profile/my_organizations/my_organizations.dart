@@ -16,7 +16,7 @@ class _MyOrgsState extends State<MyOrgs> {
   final db = FirebaseFirestore.instance.collection("userList");
   final user = FirebaseAuth.instance.currentUser;
   late Future<DocumentSnapshot<Map<String, dynamic>>> myOrgs =
-      db.doc(user!.displayName).get();
+      db.doc(user!.uid).get();
   @override
   Widget build(BuildContext context) {
     return Scaffold(

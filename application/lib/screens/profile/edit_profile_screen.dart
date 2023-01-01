@@ -164,7 +164,7 @@ class _EditProfileState extends State<EditProfile> {
                                                 floatingLabelBehavior:
                                                     FloatingLabelBehavior.never,
                                               ),
-                                              keyboardType: TextInputType.name,
+                                              keyboardType: TextInputType.emailAddress,
                                               minLines: 1,
                                               maxLines: 1,
                                               onChanged: (value) {
@@ -232,10 +232,9 @@ class _EditProfileState extends State<EditProfile> {
                                                                 .text !=
                                                             "") {
                                                           db
-                                                              .doc(user!
-                                                                  .displayName)
+                                                              .doc(user!.uid)
                                                               .update({
-                                                            "bio":
+                                                            "about":
                                                                 _bioTextController
                                                                     .text
                                                           });
@@ -259,8 +258,8 @@ class _EditProfileState extends State<EditProfile> {
                                         .reload()
                                         .then((value) {
                                         if (_bioTextController.text != "") {
-                                          db.doc(user!.displayName).update(
-                                              {"bio": _bioTextController.text});
+                                          db.doc(user!.uid).update(
+                                              {"about": _bioTextController.text});
                                         }
                                         Navigator.pushReplacement(
                                             context,

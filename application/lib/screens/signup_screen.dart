@@ -20,8 +20,11 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final db = FirebaseFirestore.instance.collection("userList");
+  final user = FirebaseAuth.instance.currentUser;
   final storage = FirebaseStorage.instance;
   final List _orgList = [];
+  final List _friends = [];
+  final string1 = "assets/profile_headshots/${imgRandom()}";
   late final File file;
   late final NewUser newUser;
   TextEditingController _emailTextController = TextEditingController();
@@ -61,17 +64,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             "Enter Username",
                             Icons.person_outline,
                             false,
-                            _userNameTextController),
+                            _userNameTextController,
+                            () {}),
                         const SizedBox(
                           height: 30,
                         ),
-                        reusableTextField("Enter Email Id",
-                            Icons.person_outline, false, _emailTextController),
+                        reusableTextField(
+                            "Enter Email Id",
+                            Icons.person_outline,
+                            false,
+                            _emailTextController,
+                            () {}),
                         const SizedBox(
                           height: 20,
                         ),
                         reusableTextField("Enter Password", Icons.lock_outline,
-                            true, _passwordTextController),
+                            true, _passwordTextController, () {}),
                         const SizedBox(
                           height: 20,
                         ),
@@ -85,23 +93,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             try {
                               user!.updateDisplayName(
                                   _userNameTextController.text);
-                              user.updatePhotoURL(
-                                  "assets/profile_headshots/${imgRandom()}");
+                              user.updatePhotoURL(string1);
                             } catch (error) {
                               print(error);
                             }
                             print("Created New Account");
                             newUser = NewUser(
-                                imagePath: user!.photoURL ??
-                                    "assets/solo-cup-logo.png",
+                                imagePath: string1,
                                 name: _userNameTextController.text,
                                 phoneNumber: "",
                                 email: _emailTextController.text,
                                 myOrgs: _orgList,
+                                friends: _friends,
                                 about: "");
-                            db
-                                .doc(_userNameTextController.text)
-                                .set(newUser.toMap());
+                            db.doc(user!.uid).set(newUser.toMap());
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(

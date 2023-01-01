@@ -15,11 +15,14 @@ Image logoWidget(String imagename) {
 }
 
 TextField reusableTextField(String text, IconData icon, bool isPasswordType,
-    TextEditingController controller) {
+    TextEditingController controller, Function onChange) {
   return TextField(
       controller: controller,
       obscureText: isPasswordType,
       enableSuggestions: !isPasswordType,
+      onChanged: (value) {
+        onChange();
+      },
       autocorrect: !isPasswordType,
       cursorColor: Colors.white,
       style: TextStyle(color: Colors.white.withOpacity(0.9)),
@@ -94,8 +97,8 @@ Container signInSignUpButton(
       ));
 }
 
-Container defaultButton(
-    BuildContext context, String label, Color buttonColor, double? width, Function onTap) {
+Container defaultButton(BuildContext context, String label, Color buttonColor,
+    double? width, Function onTap) {
   return Container(
       width: width,
       height: 50,
@@ -115,7 +118,8 @@ Container defaultButton(
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5)))),
-        child: Text( label,
+        child: Text(
+          label,
           style: const TextStyle(
               color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 16),
         ),
@@ -147,13 +151,19 @@ String imgRandom() {
   return imgList[r].toString();
 }
 
-Widget editProfileListItem(BuildContext context, TextEditingController controller,
-    String text, String? placeholder, bool isBio, bool isPhone, bool isEmail) {
+Widget editProfileListItem(
+    BuildContext context,
+    TextEditingController controller,
+    String text,
+    String? placeholder,
+    bool isBio,
+    bool isPhone,
+    bool isEmail) {
   return !isBio
       ? Row(
           children: <Widget>[
             SizedBox(
-                height: 25, child: Text(text, style: TextStyle(fontSize: 18))),
+                height: 25, child: Text(text, style: const TextStyle(fontSize: 18))),
             const SizedBox(
               width: 12,
             ),
@@ -165,8 +175,7 @@ Widget editProfileListItem(BuildContext context, TextEditingController controlle
                     controller: controller,
                     obscureText: false,
                     enableSuggestions: false,
-                    autofocus: false,
-                    focusNode: FocusNode(),
+                    autofocus: true,
                     autocorrect: false,
                     cursorColor: Colors.black,
                     style: TextStyle(color: Colors.black.withOpacity(0.9)),
@@ -176,18 +185,10 @@ Widget editProfileListItem(BuildContext context, TextEditingController controlle
                           TextStyle(color: Colors.black.withOpacity(0.9)),
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                     ),
-                    keyboardType: !isPhone
-                        ? !isEmail
-                            ? TextInputType.multiline
-                            : TextInputType.emailAddress
-                        : TextInputType.number,
+                    keyboardType: TextInputType.emailAddress,
                     minLines: 1,
                     maxLines: !isBio ? 1 : null,
-                    onChanged: (value) {
-                      TextSelection previousSelection = controller.selection;
-                      controller.text = value;
-                      controller.selection = previousSelection;
-                    },
+                    
                   ),
                 ))
           ],
@@ -206,18 +207,9 @@ Widget editProfileListItem(BuildContext context, TextEditingController controlle
             labelStyle: TextStyle(color: Colors.black.withOpacity(0.9)),
             floatingLabelBehavior: FloatingLabelBehavior.never,
           ),
-          keyboardType: !isPhone
-              ? !isEmail
-                  ? TextInputType.multiline
-                  : TextInputType.emailAddress
-              : TextInputType.number,
+          keyboardType: TextInputType.emailAddress,
           minLines: 1,
           maxLines: !isBio ? 1 : null,
-          onChanged: (value) {
-            TextSelection previousSelection = controller.selection;
-            controller.text = value;
-            controller.selection = previousSelection;
-          },
         );
 }
 
@@ -256,7 +248,7 @@ Container profileImage(BuildContext context, String imageURL) {
       height: 100,
       child: ClipRRect(
           borderRadius: BorderRadius.circular(100),
-          child: Image(
+          child: (!imageURL.contains('assets'))? Image.network(imageURL):Image(
             image: AssetImage(imageURL),
           )),
     ),
@@ -297,11 +289,9 @@ SizedBox settingsCheckBox(
                 value: isChecked,
                 onChanged: onChange,
               ),
-            ) //CheckboxListTile
-            ), //Container
-      ), //Padding
-    ), //Center
+            )
+            ),
+      ),
+    ),
   );
 }
-
-

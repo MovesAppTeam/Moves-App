@@ -168,12 +168,12 @@ class _CreateOrgState extends State<CreateOrg> {
                       privacy: _privacy,
                       bio: _bioTextController.text);
                   db.doc(_nameTextController.text).set(org!.toMap());
-                  userOrgData.doc(user!.displayName).get().then((value) {
+                  userOrgData.doc(user!.uid).get().then((value) {
                     userOrgMap = value.data();
                     _userList = userOrgMap!.putIfAbsent("myOrgs", () => null);
                     _userList.add(_nameTextController.text);
                     userOrgData
-                      .doc(user!.displayName)
+                      .doc(user!.uid)
                       .update({"myOrgs": _userList});
                   });
                   Navigator.push(

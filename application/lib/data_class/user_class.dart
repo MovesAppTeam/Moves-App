@@ -8,6 +8,7 @@ class NewUser {
   final String phoneNumber;
   final String email;
   final List myOrgs;
+  final List friends;
   final String about;
   NewUser({
     required this.imagePath,
@@ -15,6 +16,7 @@ class NewUser {
     required this.phoneNumber,
     required this.email,
     required this.myOrgs,
+    required this.friends,
     required this.about,
   });
 
@@ -24,6 +26,7 @@ class NewUser {
     String? phoneNumber,
     String? email,
     List? myOrgs,
+    List? friends,
     String? about,
   }) {
     return NewUser(
@@ -32,6 +35,7 @@ class NewUser {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       email: email ?? this.email,
       myOrgs: myOrgs ?? this.myOrgs,
+      friends: friends ?? this.friends,
       about: about ?? this.about,
     );
   }
@@ -43,6 +47,7 @@ class NewUser {
       'phoneNumber': phoneNumber,
       'email': email,
       'myOrgs': myOrgs,
+      'friends': friends,
       'about': about,
     };
   }
@@ -54,17 +59,19 @@ class NewUser {
       phoneNumber: map['phoneNumber'] ?? '',
       email: map['email'] ?? '',
       myOrgs: List.from(map['myOrgs']),
+      friends: List.from(map['friends']),
       about: map['about'] ?? '',
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory NewUser.fromJson(String source) => NewUser.fromMap(json.decode(source));
+  factory NewUser.fromJson(String source) =>
+      NewUser.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'NewUser(imagePath: $imagePath, name: $name, phoneNumber: $phoneNumber, email: $email, myOrgs: $myOrgs, about: $about)';
+    return 'NewUser(imagePath: $imagePath, name: $name, phoneNumber: $phoneNumber, email: $email, myOrgs: $myOrgs, friends: $friends, about: $about)';
   }
 
   @override
@@ -78,6 +85,7 @@ class NewUser {
       other.phoneNumber == phoneNumber &&
       other.email == email &&
       listEquals(other.myOrgs, myOrgs) &&
+      listEquals(other.friends, friends) &&
       other.about == about;
   }
 
@@ -88,6 +96,7 @@ class NewUser {
       phoneNumber.hashCode ^
       email.hashCode ^
       myOrgs.hashCode ^
+      friends.hashCode ^
       about.hashCode;
   }
 }

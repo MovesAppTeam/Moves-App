@@ -43,12 +43,12 @@ class _SignInScreenState extends State<SignInScreen> {
                           height: 30,
                         ),
                         reusableTextField("Enter Email", Icons.person_outline,
-                            false, _emailTextController),
+                            false, _emailTextController, () {}),
                         const SizedBox(
                           height: 20,
                         ),
                         reusableTextField("Enter Password", Icons.lock_outline,
-                            true, _passwordTextController),
+                            true, _passwordTextController, () {}),
                         const SizedBox(height: 20),
                         signInSignUpButton(context, true, () {
                           FirebaseAuth.instance

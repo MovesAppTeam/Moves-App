@@ -44,10 +44,11 @@ class _UserProfileState extends State<UserProfile> {
 
     return Scaffold(
         appBar: AppBar(
+          elevation: 0,
           toolbarHeight: 50,
           automaticallyImplyLeading: false,
           title: Text("Profile", style: Theme.of(context).textTheme.headline6),
-          backgroundColor: Colors.teal,
+          backgroundColor: Colors.grey.shade100,
         ),
         body: Container(
             width: MediaQuery.of(context).size.width,

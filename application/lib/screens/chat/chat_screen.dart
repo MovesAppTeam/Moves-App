@@ -1,3 +1,4 @@
+import 'package:application/reusable_widgets/reusable_widget.dart';
 import 'package:application/screens/Signin_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,26 +11,26 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  TextEditingController _testingTextController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          elevation: 0,
           toolbarHeight: 50,
           automaticallyImplyLeading: false,
-          title: Text("Chat", style: Theme.of(context).textTheme.headline6),
-          backgroundColor: Colors.teal,
+          title: reusableTextField("Search", Icons.search, false, _testingTextController, () {},),
+          backgroundColor: Colors.grey.shade100,
         ),
-        body: Center(
-            child: ElevatedButton(
-                child: const Text("LOGOUT"),
-                onPressed: () {
-                  FirebaseAuth.instance.signOut().then((value) {
-                    print("Signed Out");
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignInScreen()));
-                  });
-                })));
+        body: Container(
+          width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            color: Colors.grey.shade100,
+          child: SingleChildScrollView(
+            child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(),
+          )),
+        ));
   }
 }

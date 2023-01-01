@@ -12,17 +12,23 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+          elevation: 0,
           toolbarHeight: 50,
           automaticallyImplyLeading: false,
           title: Text("Calendar", style: Theme.of(context).textTheme.headline6),
-          backgroundColor: Colors.teal,
+          backgroundColor: Colors.grey.shade100,
         ),
       body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+            color: Colors.grey.shade100,
         child: Padding(
           padding: EdgeInsets.fromLTRB(
-                      20, MediaQuery.of(context).size.height * 0.08, 20, 0),
-          child: Row(
+                      20, MediaQuery.of(context).size.height * 0.12, 20, 0),
+          child: SingleChildScrollView( child:
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
@@ -39,7 +45,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     ),
               ),
             ],
-          ),
+          )),
         ),
       ));
     

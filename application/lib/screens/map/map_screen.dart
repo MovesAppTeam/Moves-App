@@ -27,12 +27,6 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 50,
-          automaticallyImplyLeading: false,
-          title: Text("Map", style: Theme.of(context).textTheme.headline6),
-          backgroundColor: Colors.teal,
-        ),
         body: FutureBuilder(
             future: position,
             builder: (context, snapshot) {

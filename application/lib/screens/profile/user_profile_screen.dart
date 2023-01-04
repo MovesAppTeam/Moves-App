@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:application/reusable_widgets/reusable_widget.dart';
 import 'package:application/screens/Signin_screen.dart';
 import 'package:application/screens/bottom_navigation.dart';
+import 'package:application/screens/organization/organization_view.dart';
 import 'package:application/screens/profile/edit_profile_screen.dart';
 import 'package:application/screens/profile/my_organizations/my_organizations.dart';
 import 'package:application/screens/profile/settings/settings.dart';
@@ -49,6 +50,26 @@ class _UserProfileState extends State<UserProfile> {
           automaticallyImplyLeading: false,
           title: Text("Profile", style: Theme.of(context).textTheme.headline6),
           backgroundColor: Colors.grey.shade100,
+          leading: GestureDetector(
+      onTap: () { /* Write listener code here */ },
+      child: const Icon(
+        Icons.menu,  // add custom icons also
+        color: Colors.black,
+      ),
+  ),
+  actions: <Widget>[
+  
+    Padding(
+      padding: EdgeInsets.only(right: 20.0),
+      child: GestureDetector(
+        onTap: () {},
+        child: const Icon(
+            Icons.more_vert,
+            color: Colors.black,
+        ),
+      )
+    ),
+  ],
         ),
         body: Container(
             width: MediaQuery.of(context).size.width,
@@ -63,7 +84,7 @@ class _UserProfileState extends State<UserProfile> {
                       Stack(
                         children: [
                           profileImage(context,
-                              user!.photoURL ?? "assets/solo-cup-logo.png"),
+                              user!.photoURL ?? "assets/solo-cup-logo.png", false),
                           Positioned(
                             bottom: 0,
                             right: 0,
@@ -185,9 +206,7 @@ class _UserProfileState extends State<UserProfile> {
                         icon: Icons.assignment_outlined,
                         onPress: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const MyOrgs()));
+                              context, createRoute(const MyOrgs()));
                         },
                       ),
                       ProfileListItem(

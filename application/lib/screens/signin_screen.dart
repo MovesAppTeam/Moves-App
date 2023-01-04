@@ -43,12 +43,12 @@ class _SignInScreenState extends State<SignInScreen> {
                           height: 30,
                         ),
                         reusableTextField("Enter Email", Icons.person_outline,
-                            false, _emailTextController, () {}),
+                            false, _emailTextController, () {}, Colors.white.withOpacity(0.9), Colors.black, Colors.white.withOpacity(0.3)),
                         const SizedBox(
                           height: 20,
                         ),
                         reusableTextField("Enter Password", Icons.lock_outline,
-                            true, _passwordTextController, () {}),
+                            true, _passwordTextController, () {}, Colors.white.withOpacity(0.9), Colors.black, Colors.white.withOpacity(0.3)),
                         const SizedBox(height: 20),
                         signInSignUpButton(context, true, () {
                           FirebaseAuth.instance
@@ -60,7 +60,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => BottomNav()));
+                                    builder: (context) => BottomNav(page: 4,)));
                           }).onError((error, stackTrace) {
                             print("Error ${error.toString()}");
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(

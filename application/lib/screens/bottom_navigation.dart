@@ -7,24 +7,24 @@ import 'package:application/screens/profile/user_profile_screen.dart';
 import 'package:flutter/material.dart';
 
 class BottomNav extends StatefulWidget {
-  const BottomNav({super.key});
+  const BottomNav({Key? key, required this.page}) : super(key: key);
+  final int page;
 
   @override
   State<BottomNav> createState() => _BottomNavState();
 }
 
 class _BottomNavState extends State<BottomNav> {
-  final _pageViewController = PageController(initialPage: 2);
+  late int pageNum = widget.page;
+  late final _pageViewController = PageController(initialPage: pageNum);
 
-  int _activePage = 2;
+  late int _activePage = pageNum;
 
   @override
   void dispose() {
     _pageViewController.dispose();
     super.dispose();
   }
-
-
 
   @override
   Widget build(BuildContext context) {

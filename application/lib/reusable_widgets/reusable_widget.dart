@@ -15,7 +15,7 @@ Image logoWidget(String imagename) {
 }
 
 TextField reusableTextField(String text, IconData icon, bool isPasswordType,
-    TextEditingController controller, Function onChange) {
+    TextEditingController controller, Function onChange, Color iconColor, Color labelColor, Color backColor) {
   return TextField(
       controller: controller,
       obscureText: isPasswordType,
@@ -24,18 +24,18 @@ TextField reusableTextField(String text, IconData icon, bool isPasswordType,
         onChange();
       },
       autocorrect: !isPasswordType,
-      cursorColor: Colors.white,
-      style: TextStyle(color: Colors.white.withOpacity(0.9)),
+      cursorColor: labelColor,
+      style: TextStyle(color: labelColor),
       decoration: InputDecoration(
         prefixIcon: Icon(
           icon,
-          color: Colors.white70,
+          color: iconColor,
         ),
         labelText: text,
-        labelStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
+        labelStyle: TextStyle(color: labelColor),
         filled: true,
         floatingLabelBehavior: FloatingLabelBehavior.never,
-        fillColor: Colors.white.withOpacity(0.3),
+        fillColor: backColor,
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30.0),
             borderSide: const BorderSide(width: 0, style: BorderStyle.none)),
@@ -228,7 +228,7 @@ Future pickImg() async {
   }
 }
 
-Container profileImage(BuildContext context, String imageURL) {
+Container profileImage(BuildContext context, String imageURL, bool showNow) {
   return Container(
     width: 100,
     height: 100,
@@ -248,7 +248,9 @@ Container profileImage(BuildContext context, String imageURL) {
       height: 100,
       child: ClipRRect(
           borderRadius: BorderRadius.circular(100),
-          child: (!imageURL.contains('assets'))? Image.network(imageURL):Image(
+          child: showNow? Image(
+            image: AssetImage(imageURL),
+          ) : (!imageURL.contains('assets'))? Image.network(imageURL):Image(
             image: AssetImage(imageURL),
           )),
     ),
@@ -293,5 +295,23 @@ SizedBox settingsCheckBox(
             ),
       ),
     ),
+  );
+}
+
+Route createRoute(dynamic Page2) {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => Page2,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0.0, 1.0);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
   );
 }

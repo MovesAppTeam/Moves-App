@@ -50,7 +50,7 @@ class _EditProfileState extends State<EditProfile> {
                       Stack(
                         children: [
                           profileImage(context,
-                              user!.photoURL ?? "assets/solo-cup-logo.png"),
+                              user!.photoURL ?? "assets/solo-cup-logo.png", false),
                         ],
                       ),
                       const SizedBox(
@@ -244,7 +244,7 @@ class _EditProfileState extends State<EditProfile> {
                                                             MaterialPageRoute(
                                                                 builder:
                                                                     (context) =>
-                                                                        const BottomNav()));
+                                                                        const BottomNav(page: 4,)));
                                                       });
                                                     });
                                                   });
@@ -265,7 +265,7 @@ class _EditProfileState extends State<EditProfile> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    const BottomNav()));
+                                                    const BottomNav(page: 4,)));
                                       });
 
                                 //TODO: update user phone number

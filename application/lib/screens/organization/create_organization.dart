@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:application/data_class/organization_class.dart';
 import 'package:application/screens/bottom_navigation.dart';
 import 'package:application/screens/explore/explore_screen.dart';
+import 'package:application/screens/profile/my_organizations/my_organizations.dart';
 import 'package:application/utils/color_utils.dart';
 import 'package:application/reusable_widgets/reusable_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -34,6 +38,7 @@ class _CreateOrgState extends State<CreateOrg> {
   final List _managers = [];
   final List _members = [];
   final List _allMembers = [];
+  final List _events = [];
   late String _privacy;
   String? _img;
   bool _public_check = false;
@@ -41,6 +46,7 @@ class _CreateOrgState extends State<CreateOrg> {
   bool _private = false;
   TextEditingController _nameTextController = TextEditingController();
   TextEditingController _bioTextController = TextEditingController();
+  late String image_url;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +71,8 @@ class _CreateOrgState extends State<CreateOrg> {
             child: Column(
               children: [
                 Stack(children: [
-                  profileImage(context, _img ?? "assets/solo-cup-logo.png"),
+                  profileImage(
+                      context, _img ?? "assets/solo-cup-logo.png", true),
                   Positioned(
                     bottom: 0,
                     right: 0,
@@ -83,6 +90,8 @@ class _CreateOrgState extends State<CreateOrg> {
                           print("Image picker pressed");
                           final image = await ImagePicker()
                               .pickImage(source: ImageSource.gallery);
+                          File imageFile = File(image!.path);
+                          String fileName = imageFile.path;
                           if (image != null) {
                             _img = image.path;
                             setState(() {});
@@ -155,7 +164,7 @@ class _CreateOrgState extends State<CreateOrg> {
                 ),
                 const SizedBox(height: 10),
                 defaultButton(context, 'Done', hexStringToColor("FFE9A0"), 200,
-                    () {
+                    () async {
                   _admins.add(user!.displayName);
                   _allMembers.add(user!.displayName);
                   org = Organization(
@@ -165,6 +174,7 @@ class _CreateOrgState extends State<CreateOrg> {
                       managerList: _managers,
                       members: _members,
                       totalMembers: _allMembers,
+                      events: _events,
                       privacy: _privacy,
                       bio: _bioTextController.text);
                   db.doc(_nameTextController.text).set(org!.toMap());
@@ -172,14 +182,40 @@ class _CreateOrgState extends State<CreateOrg> {
                     userOrgMap = value.data();
                     _userList = userOrgMap!.putIfAbsent("myOrgs", () => null);
                     _userList.add(_nameTextController.text);
-                    userOrgData
-                      .doc(user!.uid)
-                      .update({"myOrgs": _userList});
+                    userOrgData.doc(user!.uid).update({"myOrgs": _userList});
                   });
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const BottomNav()));
+                  if (org!.imagePath.contains('assets')) {
+                    setState(() {});
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const BottomNav(page: 4,)));
+                  } else {
+                    FirebaseStorage storage = FirebaseStorage.instance;
+                    Reference ref = storage
+                        .ref(org!.name)
+                        .child("OrgProfileImage-${org!.imagePath}");
+
+                    UploadTask uploadTask = ref.putFile(File(org!.imagePath));
+                    await uploadTask.whenComplete(() async {
+                      var url = await ref.getDownloadURL();
+                      image_url = url.toString();
+
+                      Map<String, dynamic> demodata = {"image_url": image_url};
+                      CollectionReference collectionreference =
+                          FirebaseFirestore.instance
+                              .collection("Organizations");
+                      collectionreference
+                          .doc(org!.name)
+                          .update({"imagePath": demodata}).then((value) {
+                        setState(() {});
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const BottomNav(page: 4,)));
+                      });
+                    });
+                  }
                 })
               ],
             ),

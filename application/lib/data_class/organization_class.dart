@@ -9,6 +9,7 @@ class Organization {
   final List managerList;
   final List members;
   final List totalMembers;
+  final List events;
   final String privacy;
   final String bio;
   Organization({
@@ -18,6 +19,7 @@ class Organization {
     required this.managerList,
     required this.members,
     required this.totalMembers,
+    required this.events,
     required this.privacy,
     required this.bio,
   });
@@ -29,6 +31,7 @@ class Organization {
     List? managerList,
     List? members,
     List? totalMembers,
+    List? events,
     String? privacy,
     String? bio,
   }) {
@@ -39,6 +42,7 @@ class Organization {
       managerList: managerList ?? this.managerList,
       members: members ?? this.members,
       totalMembers: totalMembers ?? this.totalMembers,
+      events: events ?? this.events,
       privacy: privacy ?? this.privacy,
       bio: bio ?? this.bio,
     );
@@ -52,6 +56,7 @@ class Organization {
       'managerList': managerList,
       'members': members,
       'totalMembers': totalMembers,
+      'events': events,
       'privacy': privacy,
       'bio': bio,
     };
@@ -65,6 +70,7 @@ class Organization {
       managerList: List.from(map['managerList']),
       members: List.from(map['members']),
       totalMembers: List.from(map['totalMembers']),
+      events: List.from(map['events']),
       privacy: map['privacy'] ?? '',
       bio: map['bio'] ?? '',
     );
@@ -72,11 +78,12 @@ class Organization {
 
   String toJson() => json.encode(toMap());
 
-  factory Organization.fromJson(String source) => Organization.fromMap(json.decode(source));
+  factory Organization.fromJson(String source) =>
+      Organization.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'Organization(imagePath: $imagePath, name: $name, adminList: $adminList, managerList: $managerList, members: $members, totalMembers: $totalMembers, privacy: $privacy, bio: $bio)';
+    return 'Organization(imagePath: $imagePath, name: $name, adminList: $adminList, managerList: $managerList, members: $members, totalMembers: $totalMembers, events: $events, privacy: $privacy, bio: $bio)';
   }
 
   @override
@@ -91,6 +98,7 @@ class Organization {
       listEquals(other.managerList, managerList) &&
       listEquals(other.members, members) &&
       listEquals(other.totalMembers, totalMembers) &&
+      listEquals(other.events, events) &&
       other.privacy == privacy &&
       other.bio == bio;
   }
@@ -103,6 +111,7 @@ class Organization {
       managerList.hashCode ^
       members.hashCode ^
       totalMembers.hashCode ^
+      events.hashCode ^
       privacy.hashCode ^
       bio.hashCode;
   }

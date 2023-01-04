@@ -65,21 +65,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             Icons.person_outline,
                             false,
                             _userNameTextController,
-                            () {}),
+                            () {},
+                            Colors.white.withOpacity(0.9),
+                            Colors.black,
+                            Colors.white.withOpacity(0.3)),
                         const SizedBox(
                           height: 30,
                         ),
                         reusableTextField(
-                            "Enter Email Id",
+                            "Enter Email",
                             Icons.person_outline,
                             false,
                             _emailTextController,
-                            () {}),
+                            () {},
+                            Colors.white.withOpacity(0.9),
+                            Colors.black,
+                            Colors.white.withOpacity(0.3)),
                         const SizedBox(
                           height: 20,
                         ),
-                        reusableTextField("Enter Password", Icons.lock_outline,
-                            true, _passwordTextController, () {}),
+                        reusableTextField(
+                            "Enter Password",
+                            Icons.lock_outline,
+                            true,
+                            _passwordTextController,
+                            () {},
+                            Colors.white.withOpacity(0.9),
+                            Colors.black,
+                            Colors.white.withOpacity(0.3)),
                         const SizedBox(
                           height: 20,
                         ),
@@ -107,10 +120,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 friends: _friends,
                                 about: "");
                             db.doc(user!.uid).set(newUser.toMap());
+                            db
+                                .doc(user.uid)
+                                .collection("Chats")
+                                .doc("Count")
+                                .set({'count': 0});
+                            db
+                                .doc(user.uid)
+                                .collection("Chats")
+                                .doc("Messages")
+                                .set({"owner": user.uid});
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const BottomNav()));
+                                    builder: (context) => const BottomNav(page: 4,)));
                           }).onError((error, stackTrace) {
                             print("Error ${error.toString()}");
                           });

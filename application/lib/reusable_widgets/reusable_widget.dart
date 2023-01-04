@@ -46,21 +46,21 @@ TextField reusableTextField(String text, IconData icon, bool isPasswordType,
 }
 
 TextField reusableTextFieldnoIcon(
-    String text, TextEditingController controller) {
+    String text, TextEditingController controller, Color labelColor, Color backColor) {
   return TextField(
       textAlign: TextAlign.center,
       controller: controller,
       obscureText: false,
       enableSuggestions: true,
       autocorrect: true,
-      cursorColor: Colors.white,
-      style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 16),
+      cursorColor: labelColor,
+      style: TextStyle(color: labelColor, fontSize: 16),
       decoration: InputDecoration(
         label: Center(child: Text(text)),
-        labelStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
+        labelStyle: TextStyle(color: labelColor),
         filled: true,
         floatingLabelBehavior: FloatingLabelBehavior.never,
-        fillColor: Colors.white.withOpacity(0.3),
+        fillColor: backColor,
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30.0),
             borderSide: const BorderSide(width: 0, style: BorderStyle.none)),

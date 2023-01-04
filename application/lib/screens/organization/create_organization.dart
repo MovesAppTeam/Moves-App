@@ -108,7 +108,7 @@ class _CreateOrgState extends State<CreateOrg> {
                   color: Colors.white,
                 ),
                 const SizedBox(height: 20),
-                reusableTextFieldnoIcon("Enter Org Name", _nameTextController),
+                reusableTextFieldnoIcon("Enter Org Name", _nameTextController, Colors.white.withOpacity(0.9), Colors.white.withOpacity(0.3)),
                 const SizedBox(height: 20),
                 const Text("Privacy Setting",
                     style: TextStyle(color: Colors.white, fontSize: 18)),

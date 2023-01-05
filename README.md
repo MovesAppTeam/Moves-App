@@ -3,10 +3,10 @@ Developers enter here
 
 Beginners Guide (VSCODE)
 
-
-1) Download extensions:
+1) Download VSCODE extensions:
     - Flutter
     - Dart
+    - GitHub Pull Requests and Issues
     - DiemasMichiels.emulate
     - Nash.awesome-flutter-snippets
     - Flutter Color
@@ -16,18 +16,16 @@ Beginners Guide (VSCODE)
     - everettjf.pubspec-dependency-search
     - davidwoo.flutter-auto-import
 
-2) copy this and paste in a doc, txt file, ect.: export PATH="$PATH:[PATH_OF_FLUTTER_GIT_DIRECTORY]/bin"
-    - right click folder named "flutter" and copy its path
-    - replace the '[PATH_OF_FLUTTER_GIT_DIRECTORY]' with the copied path
-    - copy the entire edited line
 
-3) in terminal:
-    - run 'echo $SHELL'
-        - if shell ends in 'zsh', run 'nano ~/.zshrc'
-        - if shell ends in 'bsh', run 'nano ~/.bashrc'
-    - paste the line from step 2
-    - press 'control + x'
-    - press 'y'
-    - press 'enter'
+2) install flutter sdk (follow the link)
+    - https://docs.flutter.dev/get-started/install
+    - if you have a mac with an intel chip, look for correct sdk: https://docs.flutter.dev/development/tools/sdk/releases?tab=macos 
 
+3) Clone GitHub repository into a folder and put unzipped flutter file in that folder
     (add permissions to android for photo picker)
+
+4) Do "Update your Path" for flutter folder
+    - https://docs.flutter.dev/get-started/install/macos#update-your-path
+
+Done) Should be able to type "flutter run" into the projects terminal to start app
+    - it'll be a lot faster to make changes if you plug phone into laptop and run the project on your actual phone from there

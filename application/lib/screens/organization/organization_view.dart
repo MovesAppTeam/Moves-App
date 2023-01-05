@@ -5,6 +5,7 @@ import 'package:application/screens/profile/my_organizations/my_organizations.da
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 enum SampleItem { itemOne, itemTwo, itemThree }
 
@@ -17,6 +18,11 @@ class OrgView extends StatefulWidget {
 }
 
 class _OrgViewState extends State<OrgView> {
+  late TimeOfDay start;
+  late TimeOfDay end;
+  late List fileType;
+  late String _extension;
+  late FileType _pickingType;
   String textValue = 'Public';
   bool isPrivate = false;
   FilePickerResult? result = null;
@@ -75,6 +81,8 @@ class _OrgViewState extends State<OrgView> {
                     value: SampleItem.itemOne,
                     onTap: (() {
                       createOrg = !createOrg;
+                      start = TimeOfDay.now();
+                      end = TimeOfDay.now();
                       print(createOrg);
                     }),
                     child: const Text('Create Event')),
@@ -134,7 +142,6 @@ class _OrgViewState extends State<OrgView> {
                                   color: Colors.greenAccent[100],
                                   child: SizedBox(
                                     width: 300,
-                                    height: 500,
                                     child: Padding(
                                       padding: const EdgeInsets.all(20.0),
                                       child: Column(
@@ -202,16 +209,56 @@ class _OrgViewState extends State<OrgView> {
                                             ),
                                             keyboardType:
                                                 TextInputType.multiline,
-                                            maxLines: null, // <-- SEE HERE
-                                          ), //Text
+                                            maxLines: null,
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Spacer(),
+                                              const Text(
+                                                "Start:",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () {},
+                                                child: Text(
+                                                    "${start.format(context)}"),
+                                              ),
+                                              const Spacer(),
+                                              const Text(
+                                                "End:",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () {},
+                                                child: Text(
+                                                    "${end.format(context)}"),
+                                              ),
+                                              const Spacer(),
+                                              const Spacer(),
+                                            ],
+                                          ),
                                           const SizedBox(
                                             height: 15,
                                           ),
+                                          const Divider(),
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              Text(
+                                              const Text(
                                                 "Privacy:",
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.bold,
@@ -223,11 +270,14 @@ class _OrgViewState extends State<OrgView> {
                                                         15, 0, 0, 0),
                                                 child: Text(
                                                   textValue,
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.w500,
                                                       fontSize: 16),
                                                 ),
+                                              ),
+                                              const SizedBox(
+                                                height: 15,
                                               ),
                                               Switch(
                                                 onChanged: toggleSwitch,
@@ -255,6 +305,7 @@ class _OrgViewState extends State<OrgView> {
                                                     .files.single.path
                                                     .toString();
                                                 file = File(filePath);
+                                                fileType = filePath.split('.');
                                               } else {
                                                 // User canceled the picker
                                               }
@@ -264,10 +315,15 @@ class _OrgViewState extends State<OrgView> {
                                                 ? Column(
                                                     children: [
                                                       SizedBox(
-                                                          width: 60,
-                                                          height: 80,
-                                                          child:
-                                                              Image.file(file)),
+                                                          width: 180,
+                                                          height: 200,
+                                                          child: fileType
+                                                                      .last ==
+                                                                  "pdf"
+                                                              ? SfPdfViewer
+                                                                  .file(file)
+                                                              : Image.file(
+                                                                  file)),
                                                       Row(
                                                         children: [
                                                           Padding(
@@ -286,7 +342,7 @@ class _OrgViewState extends State<OrgView> {
                                                                         .files
                                                                         .single
                                                                         .name
-                                                                    : "Upload a flier",
+                                                                    : "Upload a flyer",
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
@@ -316,7 +372,7 @@ class _OrgViewState extends State<OrgView> {
                                                     result != null
                                                         ? result!
                                                             .files.single.name
-                                                        : "Upload a flier",
+                                                        : "Upload a flyer",
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyText2!

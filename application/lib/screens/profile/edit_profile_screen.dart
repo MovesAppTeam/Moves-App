@@ -181,7 +181,7 @@ class _EditProfileState extends State<EditProfile> {
                                             ),
                                             actions: [
                                               okButton = TextButton(
-                                                child: Text("OK"),
+                                                child: const Text("OK"),
                                                 onPressed: () async {
                                                   AuthCredential credential =
                                                       EmailAuthProvider.credential(

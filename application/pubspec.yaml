@@ -55,6 +55,7 @@ dependencies:
   paginated_search_bar: ^1.1.2
   sliding_up_panel: ^2.0.0+1
   file_picker: ^5.2.4
+  syncfusion_flutter_pdfviewer: ^20.4.42
 
 dev_dependencies:
   flutter_test:

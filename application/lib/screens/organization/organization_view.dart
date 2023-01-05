@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:application/reusable_widgets/reusable_widget.dart';
 import 'package:application/screens/profile/my_organizations/my_organizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 
 enum SampleItem { itemOne, itemTwo, itemThree }
 
@@ -14,7 +17,13 @@ class OrgView extends StatefulWidget {
 }
 
 class _OrgViewState extends State<OrgView> {
+  String textValue = 'Public';
+  bool isPrivate = false;
+  FilePickerResult? result = null;
+  late File file;
+  late String filePath;
   TextEditingController _titleTextController = TextEditingController();
+  TextEditingController _descriptionTextController = TextEditingController();
   bool createOrg = false;
   SampleItem? selectedMenu;
   late String title = widget.title;
@@ -68,7 +77,7 @@ class _OrgViewState extends State<OrgView> {
                       createOrg = !createOrg;
                       print(createOrg);
                     }),
-                    child: const Text('Create Organization')),
+                    child: const Text('Create Event')),
                 const PopupMenuItem<SampleItem>(
                   value: SampleItem.itemTwo,
                   child: Text('Item 2'),
@@ -95,109 +104,283 @@ class _OrgViewState extends State<OrgView> {
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(
                       20, MediaQuery.of(context).size.height * 0.02, 20, 0),
-                  child: Stack(
-                    children: [
-                      Center(
-                        child: Column(children: [
-                    profileImage(
-                          context,
-                          orgData!["imagePath"] ?? "assets/solo-cup-logo.png",
-                          false),
-                    const SizedBox(height: 20),
-                    Text(
-                        orgData['bio'],
-                        style: const TextStyle(
-                            color: Colors.black87,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16),
+                  child: Stack(children: [
+                    Center(
+                      child: Column(children: [
+                        profileImage(
+                            context,
+                            orgData!["imagePath"] ?? "assets/solo-cup-logo.png",
+                            false),
+                        const SizedBox(height: 20),
+                        Text(
+                          orgData['bio'],
+                          style: const TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
+                      ]),
                     ),
-                  ]),
-                      ),
-                      createOrg?
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-                        child: SingleChildScrollView(
-                          child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Card(
-          elevation: 50,
-          shadowColor: Colors.black,
-          color: Colors.greenAccent[100],
-          child: SizedBox(
-            width: 300,
-            height: 500,
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  
-                  Row(children: [
-                    Icon(Icons.clear)
-                  ],),
-                  const SizedBox(
-                    height: 10,
-                  ), 
-                  reusableTextFieldnoIcon("Title", _titleTextController, Colors.white.withOpacity(0.9), Colors.black.withOpacity(0.3)),
-                  
-                  const SizedBox(
-                    height: 10,
-                  ), //SizedBox
-                  const Text(
-                    'GeeksforGeeks is a computer science portal for geeks at geeksforgeeks.org. It contains well written, well thought and well explained computer science and programming articles, quizzes, projects, interview experiences and much more!!',
-                    style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.green,
-                    ), //Textstyle
-                  ), //Text
-                  const SizedBox(
-                    height: 10,
-                  ), //SizedBox
-                  SizedBox(
-                    width: 100,
- 
-                    child: ElevatedButton(
-                          onPressed: () => 'Null',
-                          style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.green)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(4),
-                            child: Center(
-                              child: Row(
-                                children: const [
-                                  Icon(Icons.touch_app),
-                                  Text('Done')
-                                ],
+                    createOrg
+                        ? SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height,
+                            child: SingleChildScrollView(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Card(
+                                  elevation: 50,
+                                  shadowColor: Colors.black,
+                                  color: Colors.greenAccent[100],
+                                  child: SizedBox(
+                                    width: 300,
+                                    height: 500,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              IconButton(
+                                                  onPressed: () {
+                                                    createOrg = !createOrg;
+
+                                                    _titleTextController.text =
+                                                        "";
+                                                    _descriptionTextController
+                                                        .text = "";
+                                                    toggleSwitch(true);
+                                                    result = null;
+
+                                                    setState(() {});
+                                                  },
+                                                  icon:
+                                                      const Icon(Icons.clear)),
+                                              const Spacer(),
+                                              const Text(
+                                                "Create Event",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 20),
+                                              ),
+                                              const Spacer(),
+                                              const Spacer(),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          reusableTextFieldnoIcon(
+                                              "Title",
+                                              _titleTextController,
+                                              Colors.white.withOpacity(0.9),
+                                              Colors.black.withOpacity(0.3)),
+
+                                          const SizedBox(
+                                            height: 10,
+                                          ), //SizedBox
+                                          TextField(
+                                            controller:
+                                                _descriptionTextController,
+                                            style: const TextStyle(
+                                                color: Colors.black),
+                                            cursorColor: Colors.black,
+                                            decoration: const InputDecoration(
+                                              labelText: 'Description',
+                                              labelStyle: TextStyle(
+                                                  color: Colors.black54),
+                                              enabledBorder:
+                                                  UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.black),
+                                              ),
+                                              focusedBorder:
+                                                  UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.black),
+                                              ),
+                                            ),
+                                            keyboardType:
+                                                TextInputType.multiline,
+                                            maxLines: null, // <-- SEE HERE
+                                          ), //Text
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                "Privacy:",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        15, 0, 0, 0),
+                                                child: Text(
+                                                  textValue,
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 16),
+                                                ),
+                                              ),
+                                              Switch(
+                                                onChanged: toggleSwitch,
+                                                value: isPrivate,
+                                                activeColor: Colors.blue,
+                                                activeTrackColor: Colors.yellow,
+                                                inactiveThumbColor:
+                                                    Colors.redAccent,
+                                                inactiveTrackColor:
+                                                    Colors.orange,
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
+                                          GestureDetector(
+                                            onTap: () async {
+                                              print("File picker pressed");
+                                              result = await FilePicker.platform
+                                                  .pickFiles();
+
+                                              if (result != null) {
+                                                filePath = result!
+                                                    .files.single.path
+                                                    .toString();
+                                                file = File(filePath);
+                                              } else {
+                                                // User canceled the picker
+                                              }
+                                              setState(() {});
+                                            },
+                                            child: result != null
+                                                ? Column(
+                                                    children: [
+                                                      SizedBox(
+                                                          width: 60,
+                                                          height: 80,
+                                                          child:
+                                                              Image.file(file)),
+                                                      Row(
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .fromLTRB(
+                                                                    30,
+                                                                    0,
+                                                                    0,
+                                                                    0),
+                                                            child: SizedBox(
+                                                              width: 200,
+                                                              child: Text(
+                                                                result != null
+                                                                    ? result!
+                                                                        .files
+                                                                        .single
+                                                                        .name
+                                                                    : "Upload a flier",
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .bodyText2!
+                                                                    .apply(
+                                                                        color: Colors
+                                                                            .red
+                                                                            .shade400),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          IconButton(
+                                                              onPressed: () {
+                                                                result = null;
+                                                                setState(() {});
+                                                              },
+                                                              icon: const Icon(
+                                                                Icons.cancel,
+                                                                color: Colors
+                                                                    .black87,
+                                                              )),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  )
+                                                : Text(
+                                                    result != null
+                                                        ? result!
+                                                            .files.single.name
+                                                        : "Upload a flier",
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText2!
+                                                        .apply(
+                                                            color: Colors
+                                                                .red.shade400),
+                                                  ),
+                                          ),
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
+
+                                          SizedBox(
+                                            width: 100,
+
+                                            child: ElevatedButton(
+                                              onPressed: () => 'Null',
+                                              style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all(
+                                                          Colors.green)),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(4),
+                                                child: Center(
+                                                  child: Row(
+                                                    children: const [
+                                                      Icon(Icons.touch_app),
+                                                      Text('Done')
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            // RaisedButton is deprecated and should not be used
+                                            // Use ElevatedButton instead
+
+                                            // child: RaisedButton(
+                                            //   onPressed: () => null,
+                                            //   color: Colors.green,
+                                            //   child: Padding(
+                                            //     padding: const EdgeInsets.all(4.0),
+                                            //     child: Row(
+                                            //       children: const [
+                                            //         Icon(Icons.touch_app),
+                                            //         Text('Visit'),
+                                            //       ],
+                                            //     ), //Row
+                                            //   ), //Padding
+                                            // ), //RaisedButton
+                                          ) //SizedBox
+                                        ],
+                                      ), //Column
+                                    ), //Padding
+                                  ), //SizedBox
+                                ),
                               ),
                             ),
-                          ),
-                    ),
-                    // RaisedButton is deprecated and should not be used
-                    // Use ElevatedButton instead
- 
-                    // child: RaisedButton(
-                    //   onPressed: () => null,
-                    //   color: Colors.green,
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.all(4.0),
-                    //     child: Row(
-                    //       children: const [
-                    //         Icon(Icons.touch_app),
-                    //         Text('Visit'),
-                    //       ],
-                    //     ), //Row
-                    //   ), //Padding
-                    // ), //RaisedButton
-                  ) //SizedBox
-                ],
-              ), //Column
-            ), //Padding
-          ), //SizedBox
-        ),
-                        ),
-                        ),
-                      ) : SizedBox(height: 0, width: 0,)]),
+                          )
+                        : const SizedBox(
+                            height: 0,
+                            width: 0,
+                          )
+                  ]),
                 ),
               ),
             );
@@ -208,5 +391,21 @@ class _OrgViewState extends State<OrgView> {
         },
       ),
     );
+  }
+
+  void toggleSwitch(bool value) {
+    if (isPrivate == false) {
+      setState(() {
+        isPrivate = true;
+        textValue = 'Private';
+      });
+      print('Switch Button is ON');
+    } else {
+      setState(() {
+        isPrivate = false;
+        textValue = 'Public';
+      });
+      print('Switch Button is OFF');
+    }
   }
 }

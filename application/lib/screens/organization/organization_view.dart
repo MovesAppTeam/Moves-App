@@ -6,6 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
+import 'package:date_picker_timeline/date_picker_timeline.dart';
 
 enum SampleItem { itemOne, itemTwo, itemThree }
 
@@ -18,6 +20,7 @@ class OrgView extends StatefulWidget {
 }
 
 class _OrgViewState extends State<OrgView> {
+  late Widget okButton;
   late TimeOfDay start;
   late TimeOfDay end;
   late List fileType;
@@ -227,7 +230,56 @@ class _OrgViewState extends State<OrgView> {
                                                 width: 10,
                                               ),
                                               ElevatedButton(
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: ((context) {
+                                                        return (AlertDialog(
+                                                          title: Text(
+                                                              "Set start time"),
+                                                          actions: [
+                                                            okButton =
+                                                                TextButton(
+                                                              child: Text("OK"),
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop();
+                                                              },
+                                                            )
+                                                          ],
+                                                          content:
+                                                              TimePickerSpinner(
+                                                            minutesInterval: 15,
+                                                            is24HourMode: false,
+                                                            normalTextStyle:
+                                                                const TextStyle(
+                                                                    fontSize:
+                                                                        24,
+                                                                    color: Colors
+                                                                        .black26),
+                                                            highlightedTextStyle:
+                                                                const TextStyle(
+                                                                    fontSize:
+                                                                        24,
+                                                                    color: Colors
+                                                                        .black),
+                                                            spacing: 25,
+                                                            itemHeight: 60,
+                                                            isForce2Digits:
+                                                                true,
+                                                            onTimeChange:
+                                                                (time) {
+                                                              setState(() {
+                                                                start = TimeOfDay
+                                                                    .fromDateTime(
+                                                                        time);
+                                                              });
+                                                            },
+                                                          ),
+                                                        ));
+                                                      }));
+                                                },
                                                 child: Text(
                                                     "${start.format(context)}"),
                                               ),
@@ -242,7 +294,56 @@ class _OrgViewState extends State<OrgView> {
                                                 width: 10,
                                               ),
                                               ElevatedButton(
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: ((context) {
+                                                        return (AlertDialog(
+                                                          title: Text(
+                                                              "Set end time"),
+                                                          actions: [
+                                                            okButton =
+                                                                TextButton(
+                                                              child: Text("OK"),
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop();
+                                                              },
+                                                            )
+                                                          ],
+                                                          content:
+                                                              TimePickerSpinner(
+                                                            minutesInterval: 15,
+                                                            is24HourMode: false,
+                                                            normalTextStyle:
+                                                                const TextStyle(
+                                                                    fontSize:
+                                                                        24,
+                                                                    color: Colors
+                                                                        .black26),
+                                                            highlightedTextStyle:
+                                                                const TextStyle(
+                                                                    fontSize:
+                                                                        24,
+                                                                    color: Colors
+                                                                        .black),
+                                                            spacing: 25,
+                                                            itemHeight: 60,
+                                                            isForce2Digits:
+                                                                true,
+                                                            onTimeChange:
+                                                                (time) {
+                                                              setState(() {
+                                                                end = TimeOfDay
+                                                                    .fromDateTime(
+                                                                        time);
+                                                              });
+                                                            },
+                                                          ),
+                                                        ));
+                                                      }));
+                                                },
                                                 child: Text(
                                                     "${end.format(context)}"),
                                               ),
@@ -389,7 +490,12 @@ class _OrgViewState extends State<OrgView> {
                                             width: 100,
 
                                             child: ElevatedButton(
-                                              onPressed: () => 'Null',
+                                              onPressed: () {
+                                                createOrg = !createOrg;
+                                                setState(() {
+                                                  
+                                                });
+                                              },
                                               style: ButtonStyle(
                                                   backgroundColor:
                                                       MaterialStateProperty.all(

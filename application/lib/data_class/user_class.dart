@@ -9,6 +9,7 @@ class NewUser {
   final String email;
   final List myOrgs;
   final List friends;
+  final List events;
   final String about;
   NewUser({
     required this.imagePath,
@@ -17,6 +18,7 @@ class NewUser {
     required this.email,
     required this.myOrgs,
     required this.friends,
+    required this.events,
     required this.about,
   });
 
@@ -27,6 +29,7 @@ class NewUser {
     String? email,
     List? myOrgs,
     List? friends,
+    List? events,
     String? about,
   }) {
     return NewUser(
@@ -36,6 +39,7 @@ class NewUser {
       email: email ?? this.email,
       myOrgs: myOrgs ?? this.myOrgs,
       friends: friends ?? this.friends,
+      events: events ?? this.events,
       about: about ?? this.about,
     );
   }
@@ -48,6 +52,7 @@ class NewUser {
       'email': email,
       'myOrgs': myOrgs,
       'friends': friends,
+      'events': events,
       'about': about,
     };
   }
@@ -60,6 +65,7 @@ class NewUser {
       email: map['email'] ?? '',
       myOrgs: List.from(map['myOrgs']),
       friends: List.from(map['friends']),
+      events: List.from(map['events']),
       about: map['about'] ?? '',
     );
   }
@@ -71,7 +77,7 @@ class NewUser {
 
   @override
   String toString() {
-    return 'NewUser(imagePath: $imagePath, name: $name, phoneNumber: $phoneNumber, email: $email, myOrgs: $myOrgs, friends: $friends, about: $about)';
+    return 'NewUser(imagePath: $imagePath, name: $name, phoneNumber: $phoneNumber, email: $email, myOrgs: $myOrgs, friends: $friends, events: $events, about: $about)';
   }
 
   @override
@@ -86,6 +92,7 @@ class NewUser {
       other.email == email &&
       listEquals(other.myOrgs, myOrgs) &&
       listEquals(other.friends, friends) &&
+      listEquals(other.events, events) &&
       other.about == about;
   }
 
@@ -97,6 +104,7 @@ class NewUser {
       email.hashCode ^
       myOrgs.hashCode ^
       friends.hashCode ^
+      events.hashCode ^
       about.hashCode;
   }
 }

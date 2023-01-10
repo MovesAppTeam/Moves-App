@@ -33,16 +33,16 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
+
+    final user = FirebaseAuth.instance.currentUser;
     late final XFile? image;
     late final myOrgList;
     final db = FirebaseFirestore.instance.collection("userList");
     final storage = FirebaseStorage.instance;
-    final user = FirebaseAuth.instance.currentUser;
 
     late Future<DocumentSnapshot<Map<String, dynamic>>>? bio =
         db.doc(user!.uid).get();
     late String image_url;
-
     return Scaffold(
         appBar: AppBar(
           elevation: 0,

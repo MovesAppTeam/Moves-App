@@ -25,34 +25,17 @@ class _ExploreScreenState extends State<ExploreScreen> {
           title: Text("Explore", style: Theme.of(context).textTheme.headline6),
           backgroundColor: Colors.grey.shade100,
         ),
-        body: PaginatedSearchBar<Text>(
-          maxHeight: 300,
-          hintText: 'Search',
-          headerBuilderState:
-              PaginatedSearchBarBuilderStateProperty.empty((context) {
-            return const Center(
-              child: Text(
-                  "Explore page is empty"),
-            );
-          }),
-          emptyBuilder: (context) {
-            return const Text("I'm an empty state!");
-          },
-          onSearch: ({
-            required pageIndex,
-            required pageSize,
-            required searchQuery,
-          }) async {
-            // Call your search API to return a list of items
-            return [Text("item1")];
-          },
-          itemBuilder: (
-            context, {
-            required item,
-            required index,
-          }) {
-            return Text("item1");
-          },
-        ));
+        body: Center(
+            child: ElevatedButton(
+                child: const Text("LOGOUT"),
+                onPressed: () {
+                  FirebaseAuth.instance.signOut().then((value) {
+                    print("Signed Out");
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SignInScreen()));
+                  });
+                })));
   }
 }

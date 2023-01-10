@@ -1,13 +1,18 @@
 import 'dart:io';
 
+import 'package:application/data_class/events_data.dart';
 import 'package:application/reusable_widgets/reusable_widget.dart';
+import 'package:application/screens/organization/create_organization.dart';
 import 'package:application/screens/profile/my_organizations/my_organizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
+import 'package:place_picker/place_picker.dart';
+import 'package:group_button/group_button.dart';
 
 enum SampleItem { itemOne, itemTwo, itemThree }
 
@@ -20,14 +25,22 @@ class OrgView extends StatefulWidget {
 }
 
 class _OrgViewState extends State<OrgView> {
+  final db = FirebaseFirestore.instance.collection("userList");
+  final user = FirebaseAuth.instance.currentUser;
+  String address = "Edit address";
   late Widget okButton;
   late TimeOfDay start;
   late TimeOfDay end;
+  DateTime goodDate = DateTime.now();
+  bool isaddressInput = false;
   late List fileType;
+  late List orgMembers;
   late String _extension;
   late FileType _pickingType;
   String textValue = 'Public';
   bool isPrivate = false;
+  bool _tapped = false;
+  bool _address = false;
   FilePickerResult? result = null;
   late File file;
   late String filePath;
@@ -36,6 +49,11 @@ class _OrgViewState extends State<OrgView> {
   bool createOrg = false;
   SampleItem? selectedMenu;
   late String title = widget.title;
+  late Map<String, dynamic>? userEventMap;
+  late List _userList = [];
+  late List _orgList = [];
+  late final orgDB =
+      FirebaseFirestore.instance.collection("Organizations").doc(title);
   late final data =
       FirebaseFirestore.instance.collection("Organizations").doc(title).get();
   @override
@@ -215,7 +233,65 @@ class _OrgViewState extends State<OrgView> {
                                             maxLines: null,
                                           ),
                                           const SizedBox(
-                                            height: 20,
+                                            height: 25,
+                                          ),
+                                          const Text(
+                                            "Address:",
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          RadioListTile(
+                                            value: _tapped,
+                                            groupValue: true,
+                                            toggleable: true,
+                                            onChanged: (value) {
+                                              _tapped = !_tapped;
+                                              address = "Edit address";
+                                              setState(() {});
+                                            },
+                                            title: const Text(
+                                                "Address recieved upon direct message",
+                                                style: TextStyle(fontSize: 14)),
+                                          ),
+                                          !_tapped
+                                              ? Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    SizedBox(
+                                                        width: (address ==
+                                                                "Edit address")
+                                                            ? 100
+                                                            : 200,
+                                                        child: Text(address)),
+                                                    const SizedBox(
+                                                      width: 20,
+                                                    ),
+                                                    const Icon(Icons.create)
+                                                  ],
+                                                )
+                                              : const SizedBox(
+                                                  height: 0,
+                                                  width: 0,
+                                                ),
+                                          const SizedBox(
+                                            height: 25,
+                                          ),
+                                          DatePicker(DateTime.now(),
+                                              initialSelectedDate:
+                                                  DateTime.now(),
+                                              selectionColor: Colors.black,
+                                              selectedTextColor: Colors.white,
+                                              onDateChange: (date) {
+                                            // New date selected
+                                            setState(() {
+                                              goodDate = date;
+                                            });
+                                            print(date);
+                                          }),
+                                          const SizedBox(
+                                            height: 15,
                                           ),
                                           Row(
                                             children: [
@@ -235,12 +311,12 @@ class _OrgViewState extends State<OrgView> {
                                                       context: context,
                                                       builder: ((context) {
                                                         return (AlertDialog(
-                                                          title: Text(
+                                                          title: const Text(
                                                               "Set start time"),
                                                           actions: [
                                                             okButton =
                                                                 TextButton(
-                                                              child: Text("OK"),
+                                                              child: const Text("OK"),
                                                               onPressed: () {
                                                                 Navigator.of(
                                                                         context)
@@ -299,12 +375,12 @@ class _OrgViewState extends State<OrgView> {
                                                       context: context,
                                                       builder: ((context) {
                                                         return (AlertDialog(
-                                                          title: Text(
+                                                          title: const Text(
                                                               "Set end time"),
                                                           actions: [
                                                             okButton =
                                                                 TextButton(
-                                                              child: Text("OK"),
+                                                              child: const Text("OK"),
                                                               onPressed: () {
                                                                 Navigator.of(
                                                                         context)
@@ -491,9 +567,60 @@ class _OrgViewState extends State<OrgView> {
 
                                             child: ElevatedButton(
                                               onPressed: () {
-                                                createOrg = !createOrg;
+                                                final DateTime startTime =
+                                                    DateTime(
+                                                        goodDate.year,
+                                                        goodDate.month,
+                                                        goodDate.day,
+                                                        start.hour,
+                                                        start.minute);
+                                                final DateTime endTime =
+                                                    DateTime(
+                                                        goodDate.year,
+                                                        goodDate.month,
+                                                        goodDate.day,
+                                                        end.hour,
+                                                        end.minute);
+                                                final event = Event(
+                                                    eventName:
+                                                        _titleTextController
+                                                            .text,
+                                                    from: startTime,
+                                                    to: endTime,
+                                                    background: randomColor(),
+                                                    isAllDay: false);
                                                 setState(() {
-                                                  
+                                                  _orgList =
+                                                      orgData.putIfAbsent(
+                                                          "events", () => null);
+                                                  _orgList.add(event.toJson());
+                                                  orgDB.update(
+                                                      {"events": _orgList});
+                                                  orgMembers =
+                                                      orgData["totalMembers"];
+                                                  for (var i = 0;
+                                                      i < orgMembers.length;
+                                                      i++) {
+                                                    db
+                                                        .doc(orgMembers[i])
+                                                        .get()
+                                                        .then((value) {
+                                                      userEventMap =
+                                                          value.data();
+                                                      _userList = userEventMap!
+                                                          .putIfAbsent("events",
+                                                              () => null);
+                                                      _userList
+                                                          .add(event.toJson());
+                                                      db
+                                                          .doc(orgMembers[i])
+                                                          .update({
+                                                        "events": _userList
+                                                      });
+                                                    });
+                                                  }
+
+                                                  createOrg = !createOrg;
                                                 });
                                               },
                                               style: ButtonStyle(
@@ -569,5 +696,16 @@ class _OrgViewState extends State<OrgView> {
       });
       print('Switch Button is OFF');
     }
+  }
+
+  void showPlacePicker() async {
+    LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => PlacePicker(
+              "AIzaSyCQCmGoeJu9KoV-PDzro5fYnv-jLHYRVIc",
+            )));
+
+    // Handle the result in your way
+    address = result.formattedAddress.toString();
+    setState(() {});
   }
 }

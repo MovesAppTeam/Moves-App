@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:application/data_class/events_data.dart';
 import 'package:application/data_class/organization_class.dart';
 import 'package:application/screens/bottom_navigation.dart';
 import 'package:application/screens/explore/explore_screen.dart';
@@ -38,7 +39,7 @@ class _CreateOrgState extends State<CreateOrg> {
   final List _managers = [];
   final List _members = [];
   final List _allMembers = [];
-  final List _events = [];
+  final List<Event> _events = [];
   late String _privacy;
   String? _img;
   bool _public_check = false;
@@ -165,8 +166,8 @@ class _CreateOrgState extends State<CreateOrg> {
                 const SizedBox(height: 10),
                 defaultButton(context, 'Done', hexStringToColor("FFE9A0"), 200,
                     () async {
-                  _admins.add(user!.displayName);
-                  _allMembers.add(user!.displayName);
+                  _admins.add(user!.uid);
+                  _allMembers.add(user!.uid);
                   org = Organization(
                       imagePath: _img ?? "assets/solo-cup-logo.png",
                       name: _nameTextController.text,
@@ -194,7 +195,7 @@ class _CreateOrgState extends State<CreateOrg> {
                     FirebaseStorage storage = FirebaseStorage.instance;
                     Reference ref = storage
                         .ref(org!.name)
-                        .child("OrgProfileImage-${org!.imagePath}");
+                        .child("OrgProfileImage-${org!.name}");
 
                     UploadTask uploadTask = ref.putFile(File(org!.imagePath));
                     await uploadTask.whenComplete(() async {
@@ -207,7 +208,7 @@ class _CreateOrgState extends State<CreateOrg> {
                               .collection("Organizations");
                       collectionreference
                           .doc(org!.name)
-                          .update({"imagePath": demodata}).then((value) {
+                          .update({"imagePath": image_url}).then((value) {
                         setState(() {});
                         Navigator.push(
                             context,

@@ -58,6 +58,9 @@ dependencies:
   syncfusion_flutter_pdfviewer: ^20.4.42
   flutter_time_picker_spinner: ^2.0.0
   date_picker_timeline: ^1.2.3
+  place_picker: ^0.10.0
+  custom_radio_grouped_button: ^2.1.2+2
+  group_button: ^5.2.2
 
 dev_dependencies:
   flutter_test:

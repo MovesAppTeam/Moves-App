@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:application/utils/color_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -14,8 +15,15 @@ Image logoWidget(String imagename) {
   );
 }
 
-TextField reusableTextField(String text, IconData icon, bool isPasswordType,
-    TextEditingController controller, Function onChange, Color iconColor, Color labelColor, Color backColor) {
+TextField reusableTextField(
+    String text,
+    IconData icon,
+    bool isPasswordType,
+    TextEditingController controller,
+    Function onChange,
+    Color iconColor,
+    Color labelColor,
+    Color backColor) {
   return TextField(
       controller: controller,
       obscureText: isPasswordType,
@@ -45,8 +53,8 @@ TextField reusableTextField(String text, IconData icon, bool isPasswordType,
           : TextInputType.emailAddress);
 }
 
-TextField reusableTextFieldnoIcon(
-    String text, TextEditingController controller, Color labelColor, Color backColor) {
+TextField reusableTextFieldnoIcon(String text, TextEditingController controller,
+    Color labelColor, Color backColor) {
   return TextField(
       textAlign: TextAlign.center,
       controller: controller,
@@ -151,6 +159,21 @@ String imgRandom() {
   return imgList[r].toString();
 }
 
+Color randomColor() {
+  var colors = [
+    hexStringToColor("D33F49"),
+    hexStringToColor("D7C0D0"),
+    hexStringToColor("EFF0D1"),
+    hexStringToColor("77BA99"),
+    hexStringToColor("262730")
+  ];
+  int min = 0;
+  int max = colors.length - 1;
+  Random rnd = new Random();
+  int r = min + rnd.nextInt(max - min);
+  return colors[r];
+}
+
 Widget editProfileListItem(
     BuildContext context,
     TextEditingController controller,
@@ -163,7 +186,8 @@ Widget editProfileListItem(
       ? Row(
           children: <Widget>[
             SizedBox(
-                height: 25, child: Text(text, style: const TextStyle(fontSize: 18))),
+                height: 25,
+                child: Text(text, style: const TextStyle(fontSize: 18))),
             const SizedBox(
               width: 12,
             ),
@@ -188,7 +212,6 @@ Widget editProfileListItem(
                     keyboardType: TextInputType.emailAddress,
                     minLines: 1,
                     maxLines: !isBio ? 1 : null,
-                    
                   ),
                 ))
           ],
@@ -248,11 +271,15 @@ Container profileImage(BuildContext context, String imageURL, bool showNow) {
       height: 100,
       child: ClipRRect(
           borderRadius: BorderRadius.circular(100),
-          child: showNow? Image(
-            image: AssetImage(imageURL),
-          ) : (!imageURL.contains('assets'))? Image.network(imageURL):Image(
-            image: AssetImage(imageURL),
-          )),
+          child: showNow
+              ? Image(
+                  image: AssetImage(imageURL),
+                )
+              : (!imageURL.contains('assets'))
+                  ? Image.network(imageURL)
+                  : Image(
+                      image: AssetImage(imageURL),
+                    )),
     ),
   );
 }
@@ -291,8 +318,7 @@ SizedBox settingsCheckBox(
                 value: isChecked,
                 onChanged: onChange,
               ),
-            )
-            ),
+            )),
       ),
     ),
   );

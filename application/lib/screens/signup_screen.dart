@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:application/data_class/events_data.dart';
 import 'package:application/data_class/user_class.dart';
 import 'package:application/reusable_widgets/reusable_widget.dart';
 import 'package:application/screens/bottom_navigation.dart';
@@ -23,6 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final user = FirebaseAuth.instance.currentUser;
   final storage = FirebaseStorage.instance;
   final List _orgList = [];
+  final List<Event> _eventList = [];
   final List _friends = [];
   final string1 = "assets/profile_headshots/${imgRandom()}";
   late final File file;
@@ -101,16 +103,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               .createUserWithEmailAndPassword(
                                   email: _emailTextController.text,
                                   password: _passwordTextController.text)
-                              .then((value) {
+                              .then((value) async {
                             final user = FirebaseAuth.instance.currentUser;
                             try {
-                              user!.updateDisplayName(
+                              await user!.updateDisplayName(
                                   _userNameTextController.text);
-                              user.updatePhotoURL(string1);
+                              await user.updatePhotoURL(string1).then((value) => user.reload());
+                              
                             } catch (error) {
                               print(error);
                             }
-                            print("Created New Account");
+
                             newUser = NewUser(
                                 imagePath: string1,
                                 name: _userNameTextController.text,
@@ -118,6 +121,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 email: _emailTextController.text,
                                 myOrgs: _orgList,
                                 friends: _friends,
+                                events: _eventList,
                                 about: "");
                             db.doc(user!.uid).set(newUser.toMap());
                             db
@@ -133,7 +137,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const BottomNav(page: 4,)));
+                                    builder: (context) => const BottomNav(
+                                          page: 4,
+                                        )));
                           }).onError((error, stackTrace) {
                             print("Error ${error.toString()}");
                           });

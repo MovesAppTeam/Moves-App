@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:application/data_class/events_data.dart';
 import 'package:collection/collection.dart';
 
 class Organization {
@@ -9,7 +10,7 @@ class Organization {
   final List managerList;
   final List members;
   final List totalMembers;
-  final List events;
+  final List<Event> events;
   final String privacy;
   final String bio;
   Organization({
@@ -31,7 +32,7 @@ class Organization {
     List? managerList,
     List? members,
     List? totalMembers,
-    List? events,
+    List<Event>? events,
     String? privacy,
     String? bio,
   }) {
@@ -56,7 +57,7 @@ class Organization {
       'managerList': managerList,
       'members': members,
       'totalMembers': totalMembers,
-      'events': events,
+      'events': events.map((x) => x.toMap()).toList(),
       'privacy': privacy,
       'bio': bio,
     };
@@ -70,7 +71,7 @@ class Organization {
       managerList: List.from(map['managerList']),
       members: List.from(map['members']),
       totalMembers: List.from(map['totalMembers']),
-      events: List.from(map['events']),
+      events: List<Event>.from(map['events']?.map((x) => Event.fromMap(x))),
       privacy: map['privacy'] ?? '',
       bio: map['bio'] ?? '',
     );
@@ -78,8 +79,7 @@ class Organization {
 
   String toJson() => json.encode(toMap());
 
-  factory Organization.fromJson(String source) =>
-      Organization.fromMap(json.decode(source));
+  factory Organization.fromJson(String source) => Organization.fromMap(json.decode(source));
 
   @override
   String toString() {

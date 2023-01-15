@@ -8,6 +8,7 @@ import 'package:application/screens/organization/organization_view.dart';
 import 'package:application/screens/profile/edit_profile_screen.dart';
 import 'package:application/screens/profile/my_organizations/my_organizations.dart';
 import 'package:application/screens/profile/settings/settings.dart';
+import 'package:application/screens/signup_screen.dart';
 import 'package:application/utils/color_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -229,9 +230,10 @@ class _UserProfileState extends State<UserProfile> {
                             print("Signed Out");
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const SignInScreen()));
+                                PageRouteBuilder(
+                                  transitionDuration: Duration(milliseconds: 100),
+                                  transitionsBuilder: ((context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child,)),
+                                  pageBuilder: ((context, animation, secondaryAnimation) => SignInScreen())));
                           });
                         },
                       ),

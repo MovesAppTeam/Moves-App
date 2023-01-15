@@ -39,12 +39,14 @@ class Event {
   DateTime from;
   DateTime to;
   Color background;
+  String address;
   bool isAllDay;
   Event({
     required this.eventName,
     required this.from,
     required this.to,
     required this.background,
+    required this.address,
     required this.isAllDay,
   });
 
@@ -53,6 +55,7 @@ class Event {
     DateTime? from,
     DateTime? to,
     Color? background,
+    String? address,
     bool? isAllDay,
   }) {
     return Event(
@@ -60,6 +63,7 @@ class Event {
       from: from ?? this.from,
       to: to ?? this.to,
       background: background ?? this.background,
+      address: address ?? this.address,
       isAllDay: isAllDay ?? this.isAllDay,
     );
   }
@@ -70,6 +74,7 @@ class Event {
       'from': from.millisecondsSinceEpoch,
       'to': to.millisecondsSinceEpoch,
       'background': background.value,
+      'address': address,
       'isAllDay': isAllDay,
     };
   }
@@ -80,6 +85,7 @@ class Event {
       from: DateTime.fromMillisecondsSinceEpoch(map['from']),
       to: DateTime.fromMillisecondsSinceEpoch(map['to']),
       background: Color(map['background']),
+      address: map['address'] ?? '',
       isAllDay: map['isAllDay'] ?? false,
     );
   }
@@ -90,7 +96,7 @@ class Event {
 
   @override
   String toString() {
-    return 'Event(eventName: $eventName, from: $from, to: $to, background: $background, isAllDay: $isAllDay)';
+    return 'Event(eventName: $eventName, from: $from, to: $to, background: $background, address: $address, isAllDay: $isAllDay)';
   }
 
   @override
@@ -102,6 +108,7 @@ class Event {
       other.from == from &&
       other.to == to &&
       other.background == background &&
+      other.address == address &&
       other.isAllDay == isAllDay;
   }
 
@@ -111,6 +118,7 @@ class Event {
       from.hashCode ^
       to.hashCode ^
       background.hashCode ^
+      address.hashCode ^
       isAllDay.hashCode;
   }
 }

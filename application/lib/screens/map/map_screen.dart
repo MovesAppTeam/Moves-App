@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -14,6 +16,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
+  final user = FirebaseAuth.instance.currentUser;
   @override
   void initState() {
     position = _determinePosition();
@@ -96,6 +99,19 @@ class _MapScreenState extends State<MapScreen> {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
+
+    var tempData = await FirebaseFirestore.instance
+        .collection("userList")
+        .doc(user!.uid)
+        .get();
+
+      final finalData = tempData.data();
+      //var addresses = await Geocoder.local.findAddressesFromQuery(query);
+      //var first = addresses.first;
+
+      for (var item in finalData!["events"]) {
+        addMarker(item["eventName"], item["address"]);
+      };
 
     return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);

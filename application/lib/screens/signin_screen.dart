@@ -1,6 +1,7 @@
 import 'package:application/screens/bottom_navigation.dart';
 import 'package:application/screens/home_screen.dart';
 import 'package:application/screens/profile/user_profile_screen.dart';
+import 'package:application/screens/splash/splash.dart';
 import 'package:application/utils/color_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
@@ -59,8 +60,10 @@ class _SignInScreenState extends State<SignInScreen> {
                             print("Logged in successfully");
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                    builder: (context) => BottomNav(page: 4,)));
+                                PageRouteBuilder(
+                                  transitionDuration: Duration(milliseconds: 80),
+                                  transitionsBuilder: ((context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child,)),
+                                  pageBuilder: ((context, animation, secondaryAnimation) => SplashScreen())));
                           }).onError((error, stackTrace) {
                             print("Error ${error.toString()}");
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(

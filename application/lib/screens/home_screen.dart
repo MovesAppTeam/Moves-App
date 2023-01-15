@@ -21,8 +21,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     print("Signed Out");
                     Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignInScreen()));
+                        PageRouteBuilder(
+                                  transitionDuration: Duration(milliseconds: 100),
+                                  transitionsBuilder: ((context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child,)),
+                                  pageBuilder: ((context, animation, secondaryAnimation) => SignInScreen())));
                   });
                 })));
   }

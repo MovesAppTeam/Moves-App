@@ -4,6 +4,7 @@ import 'package:application/data_class/events_data.dart';
 import 'package:application/data_class/user_class.dart';
 import 'package:application/reusable_widgets/reusable_widget.dart';
 import 'package:application/screens/bottom_navigation.dart';
+import 'package:application/screens/splash/splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -136,10 +137,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 .set({"owner": user.uid});
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                    builder: (context) => const BottomNav(
-                                          page: 4,
-                                        )));
+                                PageRouteBuilder(
+                                  transitionDuration: Duration(milliseconds: 80),
+                                  transitionsBuilder: ((context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child,)),
+                                  pageBuilder: ((context, animation, secondaryAnimation) => SplashScreen())));
                           }).onError((error, stackTrace) {
                             print("Error ${error.toString()}");
                           });

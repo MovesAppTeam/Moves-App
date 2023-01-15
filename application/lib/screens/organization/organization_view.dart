@@ -59,6 +59,7 @@ class _OrgViewState extends State<OrgView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         elevation: 0,
         toolbarHeight: 50,
@@ -125,11 +126,13 @@ class _OrgViewState extends State<OrgView> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             final orgData = snapshot.data!.data();
+            List eventList = orgData!['events'];
             return Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               color: Colors.grey.shade100,
               child: SingleChildScrollView(
+                physics: ScrollPhysics(),
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(
                       20, MediaQuery.of(context).size.height * 0.02, 20, 0),
@@ -148,6 +151,22 @@ class _OrgViewState extends State<OrgView> {
                               fontWeight: FontWeight.bold,
                               fontSize: 16),
                         ),
+                        ListView.builder(
+                            shrinkWrap: true,
+                            primary: false,
+                            itemCount: eventList.length,
+                            itemBuilder: ((context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(15.0),
+                                child: Text(
+                                  Event.fromJson(orgData['events'][index])
+                                      .eventName,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              );
+                            }))
                       ]),
                     ),
                     createOrg
@@ -158,6 +177,7 @@ class _OrgViewState extends State<OrgView> {
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Card(
+                                  borderOnForeground: false,
                                   elevation: 50,
                                   shadowColor: Colors.black,
                                   color: Colors.greenAccent[100],
@@ -235,49 +255,6 @@ class _OrgViewState extends State<OrgView> {
                                           const SizedBox(
                                             height: 25,
                                           ),
-                                          const Text(
-                                            "Address:",
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                          RadioListTile(
-                                            value: _tapped,
-                                            groupValue: true,
-                                            toggleable: true,
-                                            onChanged: (value) {
-                                              _tapped = !_tapped;
-                                              address = "Edit address";
-                                              setState(() {});
-                                            },
-                                            title: const Text(
-                                                "Address recieved upon direct message",
-                                                style: TextStyle(fontSize: 14)),
-                                          ),
-                                          !_tapped
-                                              ? Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    SizedBox(
-                                                        width: (address ==
-                                                                "Edit address")
-                                                            ? 100
-                                                            : 200,
-                                                        child: Text(address)),
-                                                    const SizedBox(
-                                                      width: 20,
-                                                    ),
-                                                    const Icon(Icons.create)
-                                                  ],
-                                                )
-                                              : const SizedBox(
-                                                  height: 0,
-                                                  width: 0,
-                                                ),
-                                          const SizedBox(
-                                            height: 25,
-                                          ),
                                           DatePicker(DateTime.now(),
                                               initialSelectedDate:
                                                   DateTime.now(),
@@ -316,7 +293,8 @@ class _OrgViewState extends State<OrgView> {
                                                           actions: [
                                                             okButton =
                                                                 TextButton(
-                                                              child: const Text("OK"),
+                                                              child: const Text(
+                                                                  "OK"),
                                                               onPressed: () {
                                                                 Navigator.of(
                                                                         context)
@@ -380,7 +358,8 @@ class _OrgViewState extends State<OrgView> {
                                                           actions: [
                                                             okButton =
                                                                 TextButton(
-                                                              child: const Text("OK"),
+                                                              child: const Text(
+                                                                  "OK"),
                                                               onPressed: () {
                                                                 Navigator.of(
                                                                         context)
@@ -431,6 +410,54 @@ class _OrgViewState extends State<OrgView> {
                                             height: 15,
                                           ),
                                           const Divider(),
+                                          const Text(
+                                            "Address:",
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          RadioListTile(
+                                            value: _tapped,
+                                            groupValue: true,
+                                            toggleable: true,
+                                            onChanged: (value) {
+                                              _tapped = !_tapped;
+                                              address = "Edit address";
+                                              setState(() {});
+                                            },
+                                            title: const Text(
+                                                "Address recieved upon direct message",
+                                                style: TextStyle(fontSize: 14)),
+                                          ),
+                                          !_tapped
+                                              ? Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    SizedBox(
+                                                        width: (address ==
+                                                                "Edit address")
+                                                            ? 100
+                                                            : 200,
+                                                        child: Text(address)),
+                                                    const SizedBox(
+                                                      width: 20,
+                                                    ),
+                                                    IconButton(
+                                                        onPressed:
+                                                            showPlacePicker,
+                                                        icon: const Icon(
+                                                            Icons.create))
+                                                  ],
+                                                )
+                                              : const SizedBox(
+                                                  height: 0,
+                                                  width: 0,
+                                                ),
+                                          const Divider(),
+                                          const SizedBox(
+                                            height: 25,
+                                          ),
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
@@ -588,6 +615,7 @@ class _OrgViewState extends State<OrgView> {
                                                     from: startTime,
                                                     to: endTime,
                                                     background: randomColor(),
+                                                    address: address,
                                                     isAllDay: false);
                                                 setState(() {
                                                   _orgList =
@@ -596,6 +624,10 @@ class _OrgViewState extends State<OrgView> {
                                                   _orgList.add(event.toJson());
                                                   orgDB.update(
                                                       {"events": _orgList});
+                                                  setState(() {
+                                                    eventList =
+                                                        orgData["events"];
+                                                  });
                                                   orgMembers =
                                                       orgData["totalMembers"];
                                                   for (var i = 0;
@@ -621,6 +653,9 @@ class _OrgViewState extends State<OrgView> {
                                                   }
 
                                                   createOrg = !createOrg;
+                                                  setState(() {
+                                                    eventList.add(event);
+                                                  });
                                                 });
                                               },
                                               style: ButtonStyle(

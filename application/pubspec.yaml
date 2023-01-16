@@ -63,6 +63,7 @@ dependencies:
   group_button: ^5.2.2
   flutter_geocoder: ^0.2.2-nullsafety
   geocoding: ^2.0.5
+  location_geocoder: ^1.0.5
 
 dev_dependencies:
   flutter_test:

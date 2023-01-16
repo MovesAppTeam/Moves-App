@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class EventDataSource extends CalendarDataSource {
@@ -40,6 +41,8 @@ class Event {
   DateTime to;
   Color background;
   String address;
+  double latitude;
+  double longitude;
   bool isAllDay;
   Event({
     required this.eventName,
@@ -47,6 +50,8 @@ class Event {
     required this.to,
     required this.background,
     required this.address,
+    required this.latitude,
+    required this.longitude,
     required this.isAllDay,
   });
 
@@ -56,6 +61,8 @@ class Event {
     DateTime? to,
     Color? background,
     String? address,
+    double? latitude,
+    double? longitude,
     bool? isAllDay,
   }) {
     return Event(
@@ -64,6 +71,8 @@ class Event {
       to: to ?? this.to,
       background: background ?? this.background,
       address: address ?? this.address,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
       isAllDay: isAllDay ?? this.isAllDay,
     );
   }
@@ -75,6 +84,8 @@ class Event {
       'to': to.millisecondsSinceEpoch,
       'background': background.value,
       'address': address,
+      'latitude': latitude,
+      'longitude': longitude,
       'isAllDay': isAllDay,
     };
   }
@@ -86,6 +97,8 @@ class Event {
       to: DateTime.fromMillisecondsSinceEpoch(map['to']),
       background: Color(map['background']),
       address: map['address'] ?? '',
+      latitude: map['latitude']?.toDouble() ?? 0.0,
+      longitude: map['longitude']?.toDouble() ?? 0.0,
       isAllDay: map['isAllDay'] ?? false,
     );
   }
@@ -96,7 +109,7 @@ class Event {
 
   @override
   String toString() {
-    return 'Event(eventName: $eventName, from: $from, to: $to, background: $background, address: $address, isAllDay: $isAllDay)';
+    return 'Event(eventName: $eventName, from: $from, to: $to, background: $background, address: $address, latitude: $latitude, longitude: $longitude, isAllDay: $isAllDay)';
   }
 
   @override
@@ -109,6 +122,8 @@ class Event {
       other.to == to &&
       other.background == background &&
       other.address == address &&
+      other.latitude == latitude &&
+      other.longitude == longitude &&
       other.isAllDay == isAllDay;
   }
 
@@ -119,6 +134,8 @@ class Event {
       to.hashCode ^
       background.hashCode ^
       address.hashCode ^
+      latitude.hashCode ^
+      longitude.hashCode ^
       isAllDay.hashCode;
   }
 }

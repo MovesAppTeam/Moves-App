@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -23,9 +26,14 @@ class _MapScreenState extends State<MapScreen> {
     super.initState();
   }
 
+  final tempData = FirebaseFirestore.instance
+      .collection("userList")
+      .doc(FirebaseAuth.instance.currentUser!.uid)
+      .get();
+
   late Future<Position> position;
   late GoogleMapController _mapController;
-  Map<String, Marker> _markers = {};
+  Set<Marker> _markers = Set();
 
   @override
   Widget build(BuildContext context) {
@@ -37,18 +45,37 @@ class _MapScreenState extends State<MapScreen> {
                 return const Center(child: CircularProgressIndicator());
               }
               if (snapshot.hasError) {
-                return Text(snapshot.error.toString());
+                return Center(child: Text(snapshot.error.toString()));
               } else {
-                return GoogleMap(
-                  onMapCreated: (controller) {
-                    controller = _mapController;
+                final curLocation = snapshot.data;
+                return FutureBuilder(
+                  future: tempData,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      final finalData = snapshot.data!.data();
+                      for (String item in finalData!["events"]) {
+                        final Map<String, dynamic> data =
+                            JsonDecoder().convert(item);
+
+                        addMarker(data["eventName"],
+                            LatLng(data['latitude'], data['longitude']));
+                        print(_markers);
+                      }
+                      return GoogleMap(
+                        markers: _markers,
+                        onMapCreated: (controller) {
+                          controller = _mapController;
+                        },
+                        initialCameraPosition: CameraPosition(
+                            target: LatLng(
+                                curLocation!.latitude, curLocation!.longitude),
+                            zoom: 14),
+                        myLocationButtonEnabled: true,
+                        myLocationEnabled: true,
+                      );
+                    }
+                    return Center(child: Text(snapshot.error.toString()));
                   },
-                  initialCameraPosition: CameraPosition(
-                      target: LatLng(
-                          snapshot.data!.latitude, snapshot.data!.longitude),
-                      zoom: 14),
-                  myLocationButtonEnabled: true,
-                  myLocationEnabled: true,
                 );
               }
             }));
@@ -60,8 +87,7 @@ class _MapScreenState extends State<MapScreen> {
       position: location,
     );
 
-    _markers[id] = marker;
-    setState(() {});
+    _markers.add(marker);
   }
 
   /// Determine the current position of the device.
@@ -99,19 +125,6 @@ class _MapScreenState extends State<MapScreen> {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
-
-    var tempData = await FirebaseFirestore.instance
-        .collection("userList")
-        .doc(user!.uid)
-        .get();
-
-      final finalData = tempData.data();
-      //var addresses = await Geocoder.local.findAddressesFromQuery(query);
-      //var first = addresses.first;
-
-      for (var item in finalData!["events"]) {
-        addMarker(item["eventName"], item["address"]);
-      };
 
     return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);

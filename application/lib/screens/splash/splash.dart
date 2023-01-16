@@ -45,12 +45,6 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: hexStringToColor("0E86D4"),
       body: Container(
-        decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-              hexStringToColor("CC3636"),
-              hexStringToColor("367E18"),
-              hexStringToColor("FFE9A0")
-            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
         child: Center(
           child: SizedBox(
                     height: 250,

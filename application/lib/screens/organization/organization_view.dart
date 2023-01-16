@@ -28,6 +28,8 @@ class _OrgViewState extends State<OrgView> {
   final db = FirebaseFirestore.instance.collection("userList");
   final user = FirebaseAuth.instance.currentUser;
   String address = "Edit address";
+  late double latitude;
+  late double longitude;
   late Widget okButton;
   late TimeOfDay start;
   late TimeOfDay end;
@@ -616,6 +618,8 @@ class _OrgViewState extends State<OrgView> {
                                                     to: endTime,
                                                     background: randomColor(),
                                                     address: address,
+                                                    latitude: latitude,
+                                                    longitude: longitude,
                                                     isAllDay: false);
                                                 setState(() {
                                                   _orgList =
@@ -740,6 +744,8 @@ class _OrgViewState extends State<OrgView> {
             )));
 
     // Handle the result in your way
+    latitude = result.latLng!.latitude;
+    longitude = result.latLng!.longitude;
     address = result.formattedAddress.toString();
     setState(() {});
   }

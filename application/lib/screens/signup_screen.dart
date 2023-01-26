@@ -30,6 +30,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final string1 = "assets/profile_headshots/${imgRandom()}";
   late final File file;
   late final NewUser newUser;
+  final int friends = 0;
+  final int movePoints = 0;
+  final int orgNum = 0;
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _userNameTextController = TextEditingController();
@@ -50,11 +53,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-              hexStringToColor("57E2E5"),
-              hexStringToColor("6A7FDB"),
-              hexStringToColor("45CB85")
-            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+                color: Colors.black.withOpacity(0.8)),
             child: SingleChildScrollView(
                 child: Padding(
                     padding: const EdgeInsets.fromLTRB(20, 120, 20, 0),
@@ -123,7 +122,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 myOrgs: _orgList,
                                 friends: _friends,
                                 events: _eventList,
-                                about: "");
+                                about: "",
+                                numFriends: friends,
+                                score: movePoints,
+                                numOrgs: orgNum,
+                                );
                             db.doc(user!.uid).set(newUser.toMap());
                             db
                                 .doc(user.uid)

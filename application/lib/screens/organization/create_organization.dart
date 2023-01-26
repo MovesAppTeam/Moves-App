@@ -15,6 +15,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
+
+var uuid = Uuid();
 
 class CreateOrg extends StatefulWidget {
   const CreateOrg({super.key});
@@ -109,7 +112,11 @@ class _CreateOrgState extends State<CreateOrg> {
                   color: Colors.white,
                 ),
                 const SizedBox(height: 20),
-                reusableTextFieldnoIcon("Enter Org Name", _nameTextController, Colors.white.withOpacity(0.9), Colors.white.withOpacity(0.3)),
+                reusableTextFieldnoIcon(
+                    "Enter Org Name",
+                    _nameTextController,
+                    Colors.white.withOpacity(0.9),
+                    Colors.white.withOpacity(0.3)),
                 const SizedBox(height: 20),
                 const Text("Privacy Setting",
                     style: TextStyle(color: Colors.white, fontSize: 18)),
@@ -169,6 +176,7 @@ class _CreateOrgState extends State<CreateOrg> {
                   _admins.add(user!.uid);
                   _allMembers.add(user!.uid);
                   org = Organization(
+                      id: uuid.v4(),
                       imagePath: _img ?? "assets/solo-cup-logo.png",
                       name: _nameTextController.text,
                       adminList: _admins,
@@ -190,7 +198,9 @@ class _CreateOrgState extends State<CreateOrg> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const BottomNav(page: 4,)));
+                            builder: (context) => const BottomNav(
+                                  page: 4,
+                                )));
                   } else {
                     FirebaseStorage storage = FirebaseStorage.instance;
                     Reference ref = storage
@@ -213,7 +223,9 @@ class _CreateOrgState extends State<CreateOrg> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const BottomNav(page: 4,)));
+                                builder: (context) => const BottomNav(
+                                      page: 4,
+                                    )));
                       });
                     });
                   }

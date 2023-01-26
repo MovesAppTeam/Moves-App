@@ -73,39 +73,28 @@ class _MyOrgsState extends State<MyOrgs> {
           child: SingleChildScrollView(
               child: Column(
             children: [
+              Divider(),
               Container(
                   width: MediaQuery.of(context).size.width,
                   height: 50,
                   margin: const EdgeInsets.fromLTRB(15, 10, 15, 10),
                   decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(90)),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
+                      BoxDecoration(),
+                  child: TextButton(onPressed: () {
+                    Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const CreateOrg()));
-                    },
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith((states) {
-                          if (states.contains(MaterialState.pressed)) {
-                            return Colors.black26;
-                          }
-                          return hexStringToColor('FD8A8A');
-                        }),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30)))),
+                  },
+                  
                     child: const Text(
                       'Create Organization',
                       style: TextStyle(
                           color: Colors.black87,
                           fontWeight: FontWeight.bold,
                           fontSize: 16),
-                    ),
-                  )),
+                    ),)),
+              Divider(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: FutureBuilder(
@@ -170,6 +159,7 @@ class _MyOrgsState extends State<MyOrgs> {
               ),
             ],
           )),
+        
         ));
   }
 }

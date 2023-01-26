@@ -11,6 +11,9 @@ class NewUser {
   final List friends;
   final List events;
   final String about;
+  final int numFriends;
+  final int score;
+  final int numOrgs;
   NewUser({
     required this.imagePath,
     required this.name,
@@ -20,6 +23,9 @@ class NewUser {
     required this.friends,
     required this.events,
     required this.about,
+    required this.numFriends,
+    required this.score,
+    required this.numOrgs,
   });
 
   NewUser copyWith({
@@ -31,6 +37,9 @@ class NewUser {
     List? friends,
     List? events,
     String? about,
+    int? numFriends,
+    int? score,
+    int? numOrgs,
   }) {
     return NewUser(
       imagePath: imagePath ?? this.imagePath,
@@ -41,6 +50,9 @@ class NewUser {
       friends: friends ?? this.friends,
       events: events ?? this.events,
       about: about ?? this.about,
+      numFriends: numFriends ?? this.numFriends,
+      score: score ?? this.score,
+      numOrgs: numOrgs ?? this.numOrgs,
     );
   }
 
@@ -54,6 +66,9 @@ class NewUser {
       'friends': friends,
       'events': events,
       'about': about,
+      'numFriends': numFriends,
+      'score': score,
+      'numOrgs': numOrgs,
     };
   }
 
@@ -67,6 +82,9 @@ class NewUser {
       friends: List.from(map['friends']),
       events: List.from(map['events']),
       about: map['about'] ?? '',
+      numFriends: map['numFriends']?.toInt() ?? 0,
+      score: map['score']?.toInt() ?? 0,
+      numOrgs: map['numOrgs']?.toInt() ?? 0,
     );
   }
 
@@ -77,7 +95,7 @@ class NewUser {
 
   @override
   String toString() {
-    return 'NewUser(imagePath: $imagePath, name: $name, phoneNumber: $phoneNumber, email: $email, myOrgs: $myOrgs, friends: $friends, events: $events, about: $about)';
+    return 'NewUser(imagePath: $imagePath, name: $name, phoneNumber: $phoneNumber, email: $email, myOrgs: $myOrgs, friends: $friends, events: $events, about: $about, numFriends: $numFriends, score: $score, numOrgs: $numOrgs)';
   }
 
   @override
@@ -93,7 +111,10 @@ class NewUser {
       listEquals(other.myOrgs, myOrgs) &&
       listEquals(other.friends, friends) &&
       listEquals(other.events, events) &&
-      other.about == about;
+      other.about == about &&
+      other.numFriends == numFriends &&
+      other.score == score &&
+      other.numOrgs == numOrgs;
   }
 
   @override
@@ -105,6 +126,9 @@ class NewUser {
       myOrgs.hashCode ^
       friends.hashCode ^
       events.hashCode ^
-      about.hashCode;
+      about.hashCode ^
+      numFriends.hashCode ^
+      score.hashCode ^
+      numOrgs.hashCode;
   }
 }

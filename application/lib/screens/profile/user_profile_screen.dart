@@ -34,14 +34,18 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
+    final int friends = 0;
+    final int movePoints = 0;
+    final int orgNum = 0;
 
+    late int socialIndex;
     final user = FirebaseAuth.instance.currentUser;
     late final XFile? image;
     late final myOrgList;
     final db = FirebaseFirestore.instance.collection("userList");
     final storage = FirebaseStorage.instance;
 
-    late Future<DocumentSnapshot<Map<String, dynamic>>>? bio =
+    late Future<DocumentSnapshot<Map<String, dynamic>>>? userData =
         db.doc(user!.uid).get();
     late String image_url;
     return Scaffold(
@@ -52,194 +56,400 @@ class _UserProfileState extends State<UserProfile> {
           title: Text("Profile", style: Theme.of(context).textTheme.headline6),
           backgroundColor: Colors.grey.shade100,
           leading: GestureDetector(
-      onTap: () { /* Write listener code here */ },
-      child: const Icon(
-        Icons.menu,  // add custom icons also
-        color: Colors.black,
-      ),
-  ),
-  actions: <Widget>[
-  
-    Padding(
-      padding: EdgeInsets.only(right: 20.0),
-      child: GestureDetector(
-        onTap: () {},
-        child: const Icon(
-            Icons.more_vert,
-            color: Colors.black,
+            onTap: () {/* Write listener code here */},
+            child: const Icon(
+              Icons.menu, // add custom icons also
+              color: Colors.black,
+            ),
+          ),
+          actions: <Widget>[
+            Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () {},
+                  child: const Icon(
+                    Icons.more_vert,
+                    color: Colors.black,
+                  ),
+                )),
+          ],
         ),
-      )
-    ),
-  ],
-        ),
-        body: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            color: Colors.grey.shade100,
-            child: SingleChildScrollView(
-              child: Padding(
-                  padding: EdgeInsets.fromLTRB(
-                      20, MediaQuery.of(context).size.height * 0.08, 20, 0),
-                  child: Column(
-                    children: [
-                      Stack(
-                        children: [
-                          profileImage(context,
-                              user!.photoURL ?? "assets/solo-cup-logo.png", false),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Container(
-                              width: 35,
-                              height: 35,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100),
-                                color: Colors.white.withOpacity(0.8),
-                              ),
-                              child: IconButton(
-                                icon: Icon(Icons.create_outlined,
-                                    size: 20,
-                                    color: Colors.black.withOpacity(0.5)),
-                                onPressed: () async {
-                                  print("Image picker pressed");
-                                  image = await ImagePicker()
-                                      .pickImage(source: ImageSource.gallery);
-                                  if (image != null) {
-                                    try {
-                                      var imageFile = File(image!.path);
-                                      String fileName = imageFile.path;
-                                      FirebaseStorage storage =
-                                          FirebaseStorage.instance;
-                                      Reference ref = storage
-                                          .ref(user.uid)
-                                          .child("ProfileImage-${user.uid}");
-
-                                      UploadTask uploadTask =
-                                          ref.putFile(imageFile);
-                                      await uploadTask.whenComplete(() async {
-                                        var url = await ref.getDownloadURL();
-                                        image_url = url.toString();
-
-                                        Map<String, dynamic> demodata = {
-                                          "image_url": image_url
-                                        };
-                                        CollectionReference
-                                            collectionreference =
-                                            FirebaseFirestore.instance
-                                                .collection("userList");
-                                        collectionreference
-                                            .doc(user.uid)
-                                            .update({"imagePath": demodata});
-                                      }).catchError((onError) {
-                                        print(onError);
-                                      });
-                                    } catch (error) {
-                                      print(error);
-                                    }
-
-                                    user
-                                        .updatePhotoURL(image_url)
-                                        .then((value) {
-                                      FirebaseAuth.instance.currentUser!
-                                          .reload()
-                                          .then((value) {
-                                        setState(() {});
-                                      });
-                                    });
-                                  }
-                                },
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(user.displayName ?? "Name",
-                          style: Theme.of(context).textTheme.headline4),
-                      Text(user.email ?? "Email",
-                          style: Theme.of(context).textTheme.bodyText2),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      FutureBuilder(
-                          future: bio,
-                          builder: ((context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.done) {
-                              final about = snapshot.data!.data();
-                              if (about!.containsKey("about")) {
-                                return Text(about["about"]);
+        body: FutureBuilder(
+          future: userData,
+          builder: ((context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator.adaptive(),
+              );
+            }
+            if (snapshot.connectionState == ConnectionState.done) {
+              final thisUser = snapshot.data!.data();
+              if (thisUser!['score'] > 100000) {
+                socialIndex = 9;
+              } else {
+                if (thisUser['score'] > 75000) {
+                  socialIndex = 8;
+                } else {
+                  if (thisUser['score'] > 45000) {
+                    socialIndex = 7;
+                  } else {
+                    if (thisUser['score'] > 30000) {
+                      socialIndex = 6;
+                    } else {
+                      if (thisUser['score'] > 15000) {
+                        socialIndex = 5;
+                      } else {
+                        if (thisUser['score'] > 5500) {
+                          socialIndex = 4;
+                        } else {
+                          if (thisUser['score'] > 2500) {
+                            socialIndex = 3;
+                          } else {
+                            if (thisUser['score'] > 1000) {
+                              socialIndex = 2;
+                            } else {
+                              if (thisUser['score'] > 500) {
+                                socialIndex = 1;
+                              } else {
+                                socialIndex = 0;
                               }
                             }
-                            return const Text("");
-                          })),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        width: 200,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const EditProfile()));
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: hexStringToColor("FFE9A0"),
-                              side: BorderSide.none,
-                              shape: const StadiumBorder()),
-                          child: const Text("Edit Profile",
-                              style: TextStyle(color: Colors.black)),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      const Divider(),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      ProfileListItem(
-                        title: "My Organizations",
-                        icon: Icons.assignment_outlined,
-                        onPress: () {
-                          Navigator.push(
-                              context, createRoute(const MyOrgs()));
-                        },
-                      ),
-                      ProfileListItem(
-                        title: "Settings",
-                        icon: Icons.settings_outlined,
-                        onPress: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const SettingsScreen()));
-                        },
-                      ),
-                      ProfileListItem(
-                        title: "Log Out",
-                        icon: Icons.web_asset_off_outlined,
-                        textColor: Colors.black,
-                        onPress: () {
-                          FirebaseAuth.instance.signOut().then((value) {
-                            print("Signed Out");
-                            Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  transitionDuration: Duration(milliseconds: 100),
-                                  transitionsBuilder: ((context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child,)),
-                                  pageBuilder: ((context, animation, secondaryAnimation) => SignInScreen())));
-                          });
-                        },
-                      ),
-                    ],
-                  )),
-            )));
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+
+              //socialIndex = 0;
+
+              return Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  color: Colors.grey.shade100,
+                  child: SingleChildScrollView(
+                    child: Padding(
+                        padding: EdgeInsets.fromLTRB(20,
+                            MediaQuery.of(context).size.height * 0.08, 20, 0),
+                        child: Column(
+                          children: [
+                            Stack(
+                              children: [
+                                profileImage(
+                                    context,
+                                    user!.photoURL ??
+                                        "assets/solo-cup-logo.png",
+                                    false),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: Container(
+                                    width: 35,
+                                    height: 35,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(100),
+                                      color: Colors.white.withOpacity(0.8),
+                                    ),
+                                    child: IconButton(
+                                      icon: Icon(Icons.create_outlined,
+                                          size: 20,
+                                          color: Colors.black.withOpacity(0.5)),
+                                      onPressed: () async {
+                                        print("Image picker pressed");
+                                        image = await ImagePicker().pickImage(
+                                            source: ImageSource.gallery);
+                                        if (image != null) {
+                                          try {
+                                            var imageFile = File(image!.path);
+                                            String fileName = imageFile.path;
+                                            FirebaseStorage storage =
+                                                FirebaseStorage.instance;
+                                            Reference ref = storage
+                                                .ref(user.uid)
+                                                .child(
+                                                    "ProfileImage-${user.uid}");
+
+                                            UploadTask uploadTask =
+                                                ref.putFile(imageFile);
+                                            await uploadTask
+                                                .whenComplete(() async {
+                                              var url =
+                                                  await ref.getDownloadURL();
+                                              image_url = url.toString();
+
+                                              Map<String, dynamic> demodata = {
+                                                "image_url": image_url
+                                              };
+                                              CollectionReference
+                                                  collectionreference =
+                                                  FirebaseFirestore.instance
+                                                      .collection("userList");
+                                              collectionreference
+                                                  .doc(user.uid)
+                                                  .update(
+                                                      {"imagePath": demodata});
+                                            }).catchError((onError) {
+                                              print(onError);
+                                            });
+                                          } catch (error) {
+                                            print(error);
+                                          }
+
+                                          user
+                                              .updatePhotoURL(image_url)
+                                              .then((value) {
+                                            FirebaseAuth.instance.currentUser!
+                                                .reload()
+                                                .then((value) {
+                                              setState(() {});
+                                            });
+                                          });
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(user.displayName ?? "Name",
+                                style: Theme.of(context).textTheme.headline4),
+                            Text(user.email ?? "Email",
+                                style: Theme.of(context).textTheme.bodyText2),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(thisUser!["about"]),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              children: [
+                                Spacer(),
+                                TextButton(
+                                  onPressed: () {},
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        '${thisUser['numFriends']}',
+                                        style: TextStyle(
+                                            fontSize: 16, color: Colors.black),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        'Friends',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Spacer(),
+                                TextButton(
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text(
+                                              socialRanks
+                                                  .elementAt(socialIndex)
+                                                  .keys
+                                                  .first,
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            backgroundColor:
+                                                hexStringToColor('212F3D'),
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Container(
+                                                  width: 200,
+                                                  height: 200,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            100),
+                                                    color: Colors.black87,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.15),
+                                                        blurRadius: 8,
+                                                        spreadRadius: 6,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  child: SizedBox(
+                                                    width: 100,
+                                                    height: 100,
+                                                    child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(100),
+                                                        child: Image(
+                                                            image: AssetImage(
+                                                                'assets/social_rank_images/${socialImages[socialIndex]}'))),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 30,
+                                                ),
+                                                Text(
+                                                  '   ${socialRanks.elementAt(socialIndex).values.first}',
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.white),
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        });
+                                  },
+                                  child: Container(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          '${thisUser['score']}',
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black),
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(
+                                          'Social Score',
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Spacer(),
+                                TextButton(
+                                  onPressed: () {},
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        '${thisUser['numOrgs']}',
+                                        style: TextStyle(
+                                            fontSize: 16, color: Colors.black),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        'Orgs',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Spacer(),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            SizedBox(
+                              width: 200,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const EditProfile()));
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: hexStringToColor("FFE9A0"),
+                                    side: BorderSide.none,
+                                    shape: const StadiumBorder()),
+                                child: const Text("Edit Profile",
+                                    style: TextStyle(color: Colors.black)),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            const Divider(),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            ProfileListItem(
+                              title: "My Organizations",
+                              icon: Icons.assignment_outlined,
+                              onPress: () {
+                                Navigator.push(
+                                    context, createRoute(const MyOrgs()));
+                              },
+                            ),
+                            ProfileListItem(
+                              title: "Settings",
+                              icon: Icons.settings_outlined,
+                              onPress: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const SettingsScreen()));
+                              },
+                            ),
+                            ProfileListItem(
+                              title: "Log Out",
+                              icon: Icons.web_asset_off_outlined,
+                              textColor: Colors.black,
+                              onPress: () {
+                                FirebaseAuth.instance.signOut().then((value) {
+                                  print("Signed Out");
+                                  Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                          transitionDuration:
+                                              Duration(milliseconds: 100),
+                                          transitionsBuilder: ((context,
+                                                  animation,
+                                                  secondaryAnimation,
+                                                  child) =>
+                                              FadeTransition(
+                                                opacity: animation,
+                                                child: child,
+                                              )),
+                                          pageBuilder: ((context, animation,
+                                                  secondaryAnimation) =>
+                                              SignInScreen())));
+                                });
+                              },
+                            ),
+                          ],
+                        )),
+                  ));
+            }
+            if (snapshot.hasError) {
+              return Center(child: Text(snapshot.error.toString()));
+            } else {
+              return Center(
+                child: Text("Data refused to load"),
+              );
+            }
+          }),
+        ));
   }
 }
 

@@ -6,6 +6,7 @@ import 'package:application/screens/organization/create_organization.dart';
 import 'package:application/screens/profile/my_organizations/my_organizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -13,6 +14,9 @@ import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:place_picker/place_picker.dart';
 import 'package:group_button/group_button.dart';
+import 'package:uuid/uuid.dart';
+
+var uuid = Uuid();
 
 enum SampleItem { itemOne, itemTwo, itemThree }
 
@@ -25,6 +29,7 @@ class OrgView extends StatefulWidget {
 }
 
 class _OrgViewState extends State<OrgView> {
+  late String image_url;
   final db = FirebaseFirestore.instance.collection("userList");
   final user = FirebaseAuth.instance.currentUser;
   String address = "Edit address";
@@ -595,7 +600,8 @@ class _OrgViewState extends State<OrgView> {
                                             width: 100,
 
                                             child: ElevatedButton(
-                                              onPressed: () {
+                                              onPressed: () async {
+                                                final String id = uuid.v4();
                                                 final DateTime startTime =
                                                     DateTime(
                                                         goodDate.year,
@@ -610,10 +616,36 @@ class _OrgViewState extends State<OrgView> {
                                                         goodDate.day,
                                                         end.hour,
                                                         end.minute);
+
+                                                FirebaseStorage storage =
+                                                    FirebaseStorage.instance;
+                                                Reference ref = storage
+                                                    .ref(title)
+                                                    .child(
+                                                        id).child("EventFlyerImage-${_titleTextController.text}");
+                                                if (result!.files.single.path !=
+                                                    null) {
+                                                  UploadTask uploadTask =
+                                                      ref.putFile(File(result!
+                                                          .files.single.path
+                                                          .toString()));
+                                                  await uploadTask
+                                                      .whenComplete(() async {
+                                                    var url = await ref
+                                                        .getDownloadURL();
+                                                    image_url =
+                                                        url.toString();
+                                                  });
+                                                }
                                                 final event = Event(
+                                                    id: id,
                                                     eventName:
                                                         _titleTextController
                                                             .text,
+                                                    description:
+                                                        _descriptionTextController
+                                                            .text,
+                                                    flyer: image_url ?? "",
                                                     from: startTime,
                                                     to: endTime,
                                                     background: randomColor(),
@@ -621,7 +653,7 @@ class _OrgViewState extends State<OrgView> {
                                                     latitude: latitude,
                                                     longitude: longitude,
                                                     isAllDay: false);
-                                                setState(() {
+                                                setState(() async {
                                                   _orgList =
                                                       orgData.putIfAbsent(
                                                           "events", () => null);

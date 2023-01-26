@@ -4,6 +4,7 @@ import 'package:application/data_class/events_data.dart';
 import 'package:collection/collection.dart';
 
 class Organization {
+  String id;
   final String imagePath;
   final String name;
   final List adminList;
@@ -14,6 +15,7 @@ class Organization {
   final String privacy;
   final String bio;
   Organization({
+    required this.id,
     required this.imagePath,
     required this.name,
     required this.adminList,
@@ -26,6 +28,7 @@ class Organization {
   });
 
   Organization copyWith({
+    String? id,
     String? imagePath,
     String? name,
     List? adminList,
@@ -37,6 +40,7 @@ class Organization {
     String? bio,
   }) {
     return Organization(
+      id: id ?? this.id,
       imagePath: imagePath ?? this.imagePath,
       name: name ?? this.name,
       adminList: adminList ?? this.adminList,
@@ -51,6 +55,7 @@ class Organization {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'imagePath': imagePath,
       'name': name,
       'adminList': adminList,
@@ -65,6 +70,7 @@ class Organization {
 
   factory Organization.fromMap(Map<String, dynamic> map) {
     return Organization(
+      id: map['id'] ?? '',
       imagePath: map['imagePath'] ?? '',
       name: map['name'] ?? '',
       adminList: List.from(map['adminList']),
@@ -79,11 +85,12 @@ class Organization {
 
   String toJson() => json.encode(toMap());
 
-  factory Organization.fromJson(String source) => Organization.fromMap(json.decode(source));
+  factory Organization.fromJson(String source) =>
+      Organization.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'Organization(imagePath: $imagePath, name: $name, adminList: $adminList, managerList: $managerList, members: $members, totalMembers: $totalMembers, events: $events, privacy: $privacy, bio: $bio)';
+    return 'Organization(id: $id, imagePath: $imagePath, name: $name, adminList: $adminList, managerList: $managerList, members: $members, totalMembers: $totalMembers, events: $events, privacy: $privacy, bio: $bio)';
   }
 
   @override
@@ -92,6 +99,7 @@ class Organization {
     final listEquals = const DeepCollectionEquality().equals;
   
     return other is Organization &&
+      other.id == id &&
       other.imagePath == imagePath &&
       other.name == name &&
       listEquals(other.adminList, adminList) &&
@@ -105,7 +113,8 @@ class Organization {
 
   @override
   int get hashCode {
-    return imagePath.hashCode ^
+    return id.hashCode ^
+      imagePath.hashCode ^
       name.hashCode ^
       adminList.hashCode ^
       managerList.hashCode ^

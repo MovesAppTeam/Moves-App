@@ -6,6 +6,31 @@ import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+Set<Map<String, String>> socialRanks = {
+  {'Loner': ' You keep to yourself and thats alright'},
+  {'Ghost': " Don't tell me you don't believe in ghosts. Isn't that like the pot calling the kettle black?"},
+  {'Lurker': "  You were there. No one knew that you were there, but you were there."},
+  {'Reveler' : "  I'm glad to see you're being more social. You know how to have fun and that's fun."},
+  {'Social Butterfly' : " You're really cool to be around! It's clear you have a way with people. Keep flying higher little butterfly!"},
+  {'Party Animal' : " You always get an invite to the function. Makes sense. I mean you are the life of the party!"},
+  {'Socialite' : "  If you don't know already, you're super popular. Don't let it get your head, but you're cool like that. I gonna have to start taking notes!"},
+  {'MVP' : '''  "Name 5 broth-- wait my bad your're on the list. Have fun and let me know if someone's bothering you."'''},
+  {'Celebrity' : "  You're likable, attractive, and charismatic. I could go on, but you probably hear that a lot. If you don't, you should."},
+  {'Legend (aka "Him")' : " I guess one could say you pull the strings. If somethings going down, that was you. Soon there'll be folk lore about you. Respect!"},
+};
+List<String> socialImages = [
+  'Loner.png',
+  'Ghost.png',
+  'Lurker.png',
+  'Reveler.png',
+  'Butterfly.png',
+  'PartyAnimal.png',
+  'Socialite.png',
+  'MVP.png',
+  'Celebrity.png',
+  'Legend.png',
+];
+
 Image logoWidget(String imagename) {
   return Image.asset(
     imagename,

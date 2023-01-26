@@ -43,8 +43,8 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     startTimer();
     return Scaffold(
-      backgroundColor: hexStringToColor("0E86D4"),
       body: Container(
+        color: Colors.black.withOpacity(0.8),
         child: Center(
           child: SizedBox(
                     height: 250,

@@ -36,7 +36,10 @@ class EventDataSource extends CalendarDataSource {
 }
 
 class Event {
+  String id;
   String eventName;
+  String description;
+  String flyer;
   DateTime from;
   DateTime to;
   Color background;
@@ -45,7 +48,10 @@ class Event {
   double longitude;
   bool isAllDay;
   Event({
+    required this.id,
     required this.eventName,
+    required this.description,
+    required this.flyer,
     required this.from,
     required this.to,
     required this.background,
@@ -56,7 +62,10 @@ class Event {
   });
 
   Event copyWith({
+    String? id,
     String? eventName,
+    String? description,
+    String? flyer,
     DateTime? from,
     DateTime? to,
     Color? background,
@@ -66,7 +75,10 @@ class Event {
     bool? isAllDay,
   }) {
     return Event(
+      id: id ?? this.id,
       eventName: eventName ?? this.eventName,
+      description: description ?? this.description,
+      flyer: flyer ?? this.flyer,
       from: from ?? this.from,
       to: to ?? this.to,
       background: background ?? this.background,
@@ -79,7 +91,10 @@ class Event {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'eventName': eventName,
+      'description': description,
+      'flyer': flyer,
       'from': from.millisecondsSinceEpoch,
       'to': to.millisecondsSinceEpoch,
       'background': background.value,
@@ -92,7 +107,10 @@ class Event {
 
   factory Event.fromMap(Map<String, dynamic> map) {
     return Event(
+      id: map['id'] ?? '',
       eventName: map['eventName'] ?? '',
+      description: map['description'] ?? '',
+      flyer: map['flyer'] ?? '',
       from: DateTime.fromMillisecondsSinceEpoch(map['from']),
       to: DateTime.fromMillisecondsSinceEpoch(map['to']),
       background: Color(map['background']),
@@ -109,7 +127,7 @@ class Event {
 
   @override
   String toString() {
-    return 'Event(eventName: $eventName, from: $from, to: $to, background: $background, address: $address, latitude: $latitude, longitude: $longitude, isAllDay: $isAllDay)';
+    return 'Event(id: $id, eventName: $eventName, description: $description, flyer: $flyer, from: $from, to: $to, background: $background, address: $address, latitude: $latitude, longitude: $longitude, isAllDay: $isAllDay)';
   }
 
   @override
@@ -117,7 +135,10 @@ class Event {
     if (identical(this, other)) return true;
   
     return other is Event &&
+      other.id == id &&
       other.eventName == eventName &&
+      other.description == description &&
+      other.flyer == flyer &&
       other.from == from &&
       other.to == to &&
       other.background == background &&
@@ -129,7 +150,10 @@ class Event {
 
   @override
   int get hashCode {
-    return eventName.hashCode ^
+    return id.hashCode ^
+      eventName.hashCode ^
+      description.hashCode ^
+      flyer.hashCode ^
       from.hashCode ^
       to.hashCode ^
       background.hashCode ^

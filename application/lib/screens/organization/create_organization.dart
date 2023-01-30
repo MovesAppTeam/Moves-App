@@ -76,7 +76,7 @@ class _CreateOrgState extends State<CreateOrg> {
               children: [
                 Stack(children: [
                   profileImage(
-                      context, _img ?? "assets/solo-cup-logo.png", true),
+                      context, _img ?? "assets/solo-cup-logo.png", true, 100, 100),
                   Positioned(
                     bottom: 0,
                     right: 0,
@@ -185,7 +185,8 @@ class _CreateOrgState extends State<CreateOrg> {
                       totalMembers: _allMembers,
                       events: _events,
                       privacy: _privacy,
-                      bio: _bioTextController.text);
+                      bio: _bioTextController.text,
+                      popScore: 0);
                   db.doc(_nameTextController.text).set(org!.toMap());
                   userOrgData.doc(user!.uid).get().then((value) {
                     userOrgMap = value.data();

@@ -276,10 +276,10 @@ Future pickImg() async {
   }
 }
 
-Container profileImage(BuildContext context, String imageURL, bool showNow) {
+Container profileImage(BuildContext context, String imageURL, bool showNow, double width, double height) {
   return Container(
-    width: 100,
-    height: 100,
+    width: width,
+    height: height,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(100),
       color: Colors.white,

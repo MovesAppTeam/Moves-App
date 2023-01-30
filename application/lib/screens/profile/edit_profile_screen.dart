@@ -50,7 +50,7 @@ class _EditProfileState extends State<EditProfile> {
                       Stack(
                         children: [
                           profileImage(context,
-                              user!.photoURL ?? "assets/solo-cup-logo.png", false),
+                              user!.photoURL ?? "assets/solo-cup-logo.png", false, 100, 100),
                         ],
                       ),
                       const SizedBox(

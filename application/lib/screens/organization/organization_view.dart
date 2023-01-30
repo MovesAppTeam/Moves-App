@@ -16,7 +16,7 @@ import 'package:place_picker/place_picker.dart';
 import 'package:group_button/group_button.dart';
 import 'package:uuid/uuid.dart';
 
-var uuid = Uuid();
+var uuid = const Uuid();
 
 enum SampleItem { itemOne, itemTwo, itemThree }
 
@@ -29,6 +29,23 @@ class OrgView extends StatefulWidget {
 }
 
 class _OrgViewState extends State<OrgView> {
+  final months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'June',
+    'July',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
+  final days = ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat'];
+  late Event event;
+  late String imageNeeded;
   late String image_url;
   final db = FirebaseFirestore.instance.collection("userList");
   final user = FirebaseAuth.instance.currentUser;
@@ -73,7 +90,29 @@ class _OrgViewState extends State<OrgView> {
         automaticallyImplyLeading: true,
         centerTitle: true,
         foregroundColor: Colors.black,
-        title: Text(widget.title),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FutureBuilder(
+              future: data,
+              builder: ((context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  final orgData = snapshot.data!.data();
+
+                  imageNeeded = orgData!['imagePath'];
+                  return profileImage(context, imageNeeded, false, 30, 30);
+                }
+                return profileImage(
+                    context, "assets/solo-cup-logo.png", false, 30, 30);
+              }),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Text(widget.title),
+          ],
+        ),
         backgroundColor: Colors.grey.shade100,
         leading: GestureDetector(
           onTap: () {
@@ -133,31 +172,137 @@ class _OrgViewState extends State<OrgView> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             final orgData = snapshot.data!.data();
-            List eventList = orgData!['events'];
+            List totalMembers = orgData!['totalMembers'];
+            List eventList = orgData['events'];
+
+            if (eventList != []) {
+              eventList.sort();
+              //event = Event.fromJson(eventList.last);
+            }
+
             return Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               color: Colors.grey.shade100,
               child: SingleChildScrollView(
-                physics: ScrollPhysics(),
+                physics: const ScrollPhysics(),
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(
                       20, MediaQuery.of(context).size.height * 0.02, 20, 0),
                   child: Stack(children: [
                     Center(
                       child: Column(children: [
-                        profileImage(
+                        /*profileImage(
                             context,
                             orgData!["imagePath"] ?? "assets/solo-cup-logo.png",
-                            false),
+                            false,
+                            100,
+                            100),*/
                         const SizedBox(height: 20),
                         Text(
-                          orgData['bio'],
+                          "   ${orgData['bio']}",
                           style: const TextStyle(
                               color: Colors.black87,
                               fontWeight: FontWeight.bold,
                               fontSize: 16),
                         ),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text('Last Event:',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400)),
+                                const SizedBox(width: 15),
+                                eventList.length != 0
+                                    ? Container(
+                                        width: 55,
+                                        height: 55,
+                                        child: Column(
+                                          children: [
+                                            Text(months[event.from.month],
+                                                style: const TextStyle(
+                                                    color: Colors.black54,
+                                                    fontWeight:
+                                                        FontWeight.w400)),
+                                            Text(event.from.day.toString(),
+                                                style: const TextStyle(
+                                                    color: Colors.black54,
+                                                    fontWeight:
+                                                        FontWeight.w400)),
+                                            Text(days[event.from.day],
+                                                style: const TextStyle(
+                                                    color: Colors.black54,
+                                                    fontWeight:
+                                                        FontWeight.w400)),
+                                          ],
+                                        ),
+                                      )
+                                    : const Text("No event has been created yet", 
+                                    style: TextStyle(
+                                        fontSize: 14,))
+                              ],
+                            ),
+                            const Divider(),
+                            Row(
+                              children: [
+                                const Spacer(),
+                                TextButton(
+                                  onPressed: () {},
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        '${totalMembers.length}',
+                                        style: const TextStyle(
+                                            fontSize: 16, color: Colors.black),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      const Text(
+                                        'Total Members',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                const Spacer(),
+                                TextButton(
+                                  onPressed: () {},
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "${orgData['popScore']}",
+                                        style: const TextStyle(
+                                            fontSize: 16, color: Colors.black),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      const Text(
+                                        'Popularity Score',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                const Spacer(),
+                              ],
+                            ),
+                            
+                          ],
+                        ),
+                        const Divider(),
                         ListView.builder(
                             shrinkWrap: true,
                             primary: false,
@@ -168,7 +313,7 @@ class _OrgViewState extends State<OrgView> {
                                 child: Text(
                                   Event.fromJson(orgData['events'][index])
                                       .eventName,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600),
                                 ),
@@ -621,8 +766,9 @@ class _OrgViewState extends State<OrgView> {
                                                     FirebaseStorage.instance;
                                                 Reference ref = storage
                                                     .ref(title)
+                                                    .child(id)
                                                     .child(
-                                                        id).child("EventFlyerImage-${_titleTextController.text}");
+                                                        "EventFlyerImage-${_titleTextController.text}");
                                                 if (result!.files.single.path !=
                                                     null) {
                                                   UploadTask uploadTask =
@@ -633,8 +779,7 @@ class _OrgViewState extends State<OrgView> {
                                                       .whenComplete(() async {
                                                     var url = await ref
                                                         .getDownloadURL();
-                                                    image_url =
-                                                        url.toString();
+                                                    image_url = url.toString();
                                                   });
                                                 }
                                                 final event = Event(

@@ -14,6 +14,7 @@ class Organization {
   final List<Event> events;
   final String privacy;
   final String bio;
+  final int popScore;
   Organization({
     required this.id,
     required this.imagePath,
@@ -25,6 +26,7 @@ class Organization {
     required this.events,
     required this.privacy,
     required this.bio,
+    required this.popScore,
   });
 
   Organization copyWith({
@@ -38,6 +40,7 @@ class Organization {
     List<Event>? events,
     String? privacy,
     String? bio,
+    int? popScore,
   }) {
     return Organization(
       id: id ?? this.id,
@@ -50,6 +53,7 @@ class Organization {
       events: events ?? this.events,
       privacy: privacy ?? this.privacy,
       bio: bio ?? this.bio,
+      popScore: popScore ?? this.popScore,
     );
   }
 
@@ -65,6 +69,7 @@ class Organization {
       'events': events.map((x) => x.toMap()).toList(),
       'privacy': privacy,
       'bio': bio,
+      'popScore': popScore,
     };
   }
 
@@ -80,6 +85,7 @@ class Organization {
       events: List<Event>.from(map['events']?.map((x) => Event.fromMap(x))),
       privacy: map['privacy'] ?? '',
       bio: map['bio'] ?? '',
+      popScore: map['popScore']?.toInt() ?? 0,
     );
   }
 
@@ -90,7 +96,7 @@ class Organization {
 
   @override
   String toString() {
-    return 'Organization(id: $id, imagePath: $imagePath, name: $name, adminList: $adminList, managerList: $managerList, members: $members, totalMembers: $totalMembers, events: $events, privacy: $privacy, bio: $bio)';
+    return 'Organization(id: $id, imagePath: $imagePath, name: $name, adminList: $adminList, managerList: $managerList, members: $members, totalMembers: $totalMembers, events: $events, privacy: $privacy, bio: $bio, popScore: $popScore)';
   }
 
   @override
@@ -108,7 +114,8 @@ class Organization {
       listEquals(other.totalMembers, totalMembers) &&
       listEquals(other.events, events) &&
       other.privacy == privacy &&
-      other.bio == bio;
+      other.bio == bio &&
+      other.popScore == popScore;
   }
 
   @override
@@ -122,6 +129,7 @@ class Organization {
       totalMembers.hashCode ^
       events.hashCode ^
       privacy.hashCode ^
-      bio.hashCode;
+      bio.hashCode ^
+      popScore.hashCode;
   }
 }

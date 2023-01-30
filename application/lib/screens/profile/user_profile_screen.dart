@@ -6,6 +6,7 @@ import 'package:application/screens/Signin_screen.dart';
 import 'package:application/screens/bottom_navigation.dart';
 import 'package:application/screens/organization/organization_view.dart';
 import 'package:application/screens/profile/edit_profile_screen.dart';
+import 'package:application/screens/profile/friends/friends.dart';
 import 'package:application/screens/profile/my_organizations/my_organizations.dart';
 import 'package:application/screens/profile/settings/settings.dart';
 import 'package:application/screens/signup_screen.dart';
@@ -84,45 +85,7 @@ class _UserProfileState extends State<UserProfile> {
             }
             if (snapshot.connectionState == ConnectionState.done) {
               final thisUser = snapshot.data!.data();
-              if (thisUser!['score'] > 100000) {
-                socialIndex = 9;
-              } else {
-                if (thisUser['score'] > 75000) {
-                  socialIndex = 8;
-                } else {
-                  if (thisUser['score'] > 45000) {
-                    socialIndex = 7;
-                  } else {
-                    if (thisUser['score'] > 30000) {
-                      socialIndex = 6;
-                    } else {
-                      if (thisUser['score'] > 15000) {
-                        socialIndex = 5;
-                      } else {
-                        if (thisUser['score'] > 5500) {
-                          socialIndex = 4;
-                        } else {
-                          if (thisUser['score'] > 2500) {
-                            socialIndex = 3;
-                          } else {
-                            if (thisUser['score'] > 1000) {
-                              socialIndex = 2;
-                            } else {
-                              if (thisUser['score'] > 500) {
-                                socialIndex = 1;
-                              } else {
-                                socialIndex = 0;
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-
-              //socialIndex = 0;
+              
 
               return Container(
                   width: MediaQuery.of(context).size.width,
@@ -140,7 +103,7 @@ class _UserProfileState extends State<UserProfile> {
                                     context,
                                     user!.photoURL ??
                                         "assets/solo-cup-logo.png",
-                                    false),
+                                    false, 100, 100),
                                 Positioned(
                                   bottom: 0,
                                   right: 0,
@@ -230,7 +193,13 @@ class _UserProfileState extends State<UserProfile> {
                               children: [
                                 Spacer(),
                                 TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const FriendsList()));
+                                  },
                                   child: Column(
                                     children: [
                                       Text(
@@ -252,92 +221,7 @@ class _UserProfileState extends State<UserProfile> {
                                   ),
                                 ),
                                 Spacer(),
-                                TextButton(
-                                  onPressed: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text(
-                                              socialRanks
-                                                  .elementAt(socialIndex)
-                                                  .keys
-                                                  .first,
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            backgroundColor:
-                                                hexStringToColor('212F3D'),
-                                            content: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Container(
-                                                  width: 200,
-                                                  height: 200,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            100),
-                                                    color: Colors.black87,
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.15),
-                                                        blurRadius: 8,
-                                                        spreadRadius: 6,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  child: SizedBox(
-                                                    width: 100,
-                                                    height: 100,
-                                                    child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(100),
-                                                        child: Image(
-                                                            image: AssetImage(
-                                                                'assets/social_rank_images/${socialImages[socialIndex]}'))),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 30,
-                                                ),
-                                                Text(
-                                                  '   ${socialRanks.elementAt(socialIndex).values.first}',
-                                                  style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.white),
-                                                )
-                                              ],
-                                            ),
-                                          );
-                                        });
-                                  },
-                                  child: Container(
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          '${thisUser['score']}',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.black),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          'Social Score',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                                
                                 Spacer(),
                                 TextButton(
                                   onPressed: () {},

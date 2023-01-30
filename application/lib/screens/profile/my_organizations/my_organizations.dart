@@ -61,8 +61,13 @@ class _MyOrgsState extends State<MyOrgs> {
           Padding(
               padding: EdgeInsets.only(right: 20.0),
               child: GestureDetector(
-                onTap: () {},
-                child: Icon(Icons.more_vert),
+                onTap: () {
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const CreateOrg()));
+                },
+                child: Icon(Icons.add),
               )),
         ],
         ),
@@ -74,30 +79,7 @@ class _MyOrgsState extends State<MyOrgs> {
               child: Column(
             children: [
               Divider(),
-              Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 50,
-                  margin: const EdgeInsets.fromLTRB(15, 10, 15, 10),
-                  decoration:
-                      BoxDecoration(),
-                  child: TextButton(onPressed: () {
-                    Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const CreateOrg()));
-                  },
-                  
-                    child: const Text(
-                      'Create Organization',
-                      style: TextStyle(
-                          color: Colors.black87,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16),
-                    ),)),
-              Divider(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: FutureBuilder(
+              FutureBuilder(
                   future: myOrgs,
                   builder: ((context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
@@ -111,40 +93,27 @@ class _MyOrgsState extends State<MyOrgs> {
                           itemBuilder: ((context, index) {
                             if (data[index].toString().toLowerCase().startsWith(_testingTextController.text.toLowerCase())) {
                               return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ElevatedButton(
-                                  style: ButtonStyle(padding: MaterialStateProperty.all(const EdgeInsets.all(0),), shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)))),
-                                  onPressed: () {
+                                padding: const EdgeInsets.all(0.0),
+                                child: GestureDetector(
+                                  onTap: () {
                                     Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => OrgView(title: data[index],)));
                                   },
-                                  child: Container(
-                                    height: 70,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(20),
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Colors.black26,
-                                            blurRadius: 10,
-                                          )
-                                        ]),
-                                    child: Stack(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Align(
-                                            alignment: Alignment.center,
-                                            child: Text(data[index],
-                                                style: const TextStyle(
-                                                    color: Colors.black54,
-                                                    fontWeight:
-                                                        FontWeight.bold)))
+                                        SizedBox(height: 20,),
+                                        Text(data[index],
+                                                    style: const TextStyle(
+                                                        color: Colors.black54,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                        SizedBox(height: 20,),
+                                        Divider(),
                                       ],
-                                    )),)
+                                    ))
                               );
                             } else {
                               return const SizedBox(height: 0, width: 0,);
@@ -156,7 +125,6 @@ class _MyOrgsState extends State<MyOrgs> {
                     return const Text("The was a problem displaying bio");
                   }),
                 ),
-              ),
             ],
           )),
         

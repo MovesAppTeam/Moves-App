@@ -46,8 +46,9 @@ class _OrgViewState extends State<OrgView> {
   final days = ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat'];
   late Event event;
   late String imageNeeded;
-  late String image_url;
+  String image_url = "";
   final db = FirebaseFirestore.instance.collection("userList");
+  final FirebaseStorage storage = FirebaseStorage.instance;
   final user = FirebaseAuth.instance.currentUser;
   String address = "Edit address";
   late double latitude;
@@ -148,10 +149,9 @@ class _OrgViewState extends State<OrgView> {
                 PopupMenuItem<SampleItem>(
                     value: SampleItem.itemOne,
                     onTap: (() {
-                      createOrg = !createOrg;
                       start = TimeOfDay.now();
                       end = TimeOfDay.now();
-                      print(createOrg);
+                      createOrg = !createOrg;
                     }),
                     child: const Text('Create Event')),
                 const PopupMenuItem<SampleItem>(
@@ -242,9 +242,11 @@ class _OrgViewState extends State<OrgView> {
                                           ],
                                         ),
                                       )
-                                    : const Text("No event has been created yet", 
-                                    style: TextStyle(
-                                        fontSize: 14,))
+                                    : const Text(
+                                        "No event has been created yet",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                        ))
                               ],
                             ),
                             const Divider(),
@@ -299,7 +301,6 @@ class _OrgViewState extends State<OrgView> {
                                 const Spacer(),
                               ],
                             ),
-                            
                           ],
                         ),
                         const Divider(),
@@ -746,7 +747,9 @@ class _OrgViewState extends State<OrgView> {
 
                                             child: ElevatedButton(
                                               onPressed: () async {
+                                                // this is function for done button
                                                 final String id = uuid.v4();
+                                                
                                                 final DateTime startTime =
                                                     DateTime(
                                                         goodDate.year,
@@ -762,8 +765,6 @@ class _OrgViewState extends State<OrgView> {
                                                         end.hour,
                                                         end.minute);
 
-                                                FirebaseStorage storage =
-                                                    FirebaseStorage.instance;
                                                 Reference ref = storage
                                                     .ref(title)
                                                     .child(id)
@@ -790,7 +791,7 @@ class _OrgViewState extends State<OrgView> {
                                                     description:
                                                         _descriptionTextController
                                                             .text,
-                                                    flyer: image_url ?? "",
+                                                    flyer: image_url,
                                                     from: startTime,
                                                     to: endTime,
                                                     background: randomColor(),
@@ -833,10 +834,10 @@ class _OrgViewState extends State<OrgView> {
                                                     });
                                                   }
 
-                                                  createOrg = !createOrg;
                                                   setState(() {
                                                     eventList.add(event);
                                                   });
+                                                  createOrg = !createOrg;
                                                 });
                                               },
                                               style: ButtonStyle(
@@ -856,22 +857,6 @@ class _OrgViewState extends State<OrgView> {
                                                 ),
                                               ),
                                             ),
-                                            // RaisedButton is deprecated and should not be used
-                                            // Use ElevatedButton instead
-
-                                            // child: RaisedButton(
-                                            //   onPressed: () => null,
-                                            //   color: Colors.green,
-                                            //   child: Padding(
-                                            //     padding: const EdgeInsets.all(4.0),
-                                            //     child: Row(
-                                            //       children: const [
-                                            //         Icon(Icons.touch_app),
-                                            //         Text('Visit'),
-                                            //       ],
-                                            //     ), //Row
-                                            //   ), //Padding
-                                            // ), //RaisedButton
                                           ) //SizedBox
                                         ],
                                       ), //Column

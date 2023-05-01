@@ -1,7 +1,15 @@
 # Application
+
+Summary:
+
+This is an app using Firebase that, when complete, will be available on both android and ios app stores. The code is based in Flutter inorder to streamline this process. 
+
+The app will be called "What's the Moves" or "Moves" for short. The basic idea of the app is to allow high-school/college age kids to create events/parties and send invites for people to like, dislike, and rsvp. It will also feature direct messaging and an Explore page for public and open events.
+
+
 Developers enter here
 
-Beginners Guide (VSCODE)
+Setup Guide (VSCODE)
 
 1) Download VSCODE extensions:
     - Flutter
